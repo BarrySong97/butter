@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
   List<Widget> buildAction() {
     return [
       GestureDetector(
-        onTap: () => {Get.to(Settings())},
+        onTap: () => {Get.toNamed("/settings")},
         child: const Padding(
           padding: EdgeInsets.all(16),
           child: Icon(Icons.settings, color: Color(0xff262626)),

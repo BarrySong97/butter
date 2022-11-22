@@ -11,7 +11,10 @@ void main() {
     theme: ThemeData(
       primarySwatch: Colors.blue,
     ),
+    locale: Locale('zh', 'CN'), // translations will be displayed in that locale
+    fallbackLocale: Locale('en',
+        'US'), // specify the fallback locale in case an invalid locale is selected.
     getPages: routes,
-    home: const HomePage(title: 'Flutter Demo Home Page'),
+    home: const HomePage(),
   ));
 }
