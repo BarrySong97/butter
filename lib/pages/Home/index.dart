@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:lipomo/pages/components/Timer.dart';
+import 'package:get/get.dart';
+import 'package:lipomo/components/Timer.dart';
 
-import '../components/ButtonTools.dart';
+import '../../components/ButtonTools.dart';
+import '../Settings/index.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key, required this.title});
-
-  final String title;
+  const HomePage({
+    super.key,
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -22,23 +24,19 @@ class _HomePageState extends State<HomePage> {
         elevation: 0,
         actions: buildAction(),
       ),
-      body: Column(children: [
-        buildStopwatchPanel(),
-        // buildRecordPanel(),
-        buildTools(StopWatchType.stopped)
-      ]),
+      body: Column(
+          children: [buildStopwatchPanel(), buildTools(StopWatchType.stopped)]),
     );
   }
 
   List<Widget> buildAction() {
     return [
-      PopupMenuButton<String>(
-        itemBuilder: _buildItem,
-        onSelected: _onSelectItem,
-        icon: const Icon(Icons.more_vert_outlined, color: Color(0xff262626)),
-        position: PopupMenuPosition.under,
-        shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(10))),
+      GestureDetector(
+        onTap: () => {Get.to(Settings())},
+        child: const Padding(
+          padding: EdgeInsets.all(16),
+          child: Icon(Icons.settings, color: Color(0xff262626)),
+        ),
       )
     ];
   }

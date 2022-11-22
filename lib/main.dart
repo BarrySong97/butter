@@ -1,24 +1,17 @@
+import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:lipomo/pages/Settings/index.dart';
+import 'package:lipomo/route.dart';
 
 import 'pages/Home/index.dart';
 
 void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: const HomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
+  runApp(GetMaterialApp(
+    debugShowCheckedModeBanner: false,
+    theme: ThemeData(
+      primarySwatch: Colors.blue,
+    ),
+    getPages: routes,
+    home: const HomePage(title: 'Flutter Demo Home Page'),
+  ));
 }
