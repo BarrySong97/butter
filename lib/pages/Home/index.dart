@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:lipomo/components/Timer.dart';
 
 import '../../components/ButtonTools.dart';
-import '../Settings/index.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({

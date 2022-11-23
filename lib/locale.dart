@@ -10,6 +10,7 @@ class Lang extends Translations {
           'applyLangSub': 'switch to your language',
         },
         'zh_CN': {
+          'zh_CN': '中文',
           'pickThemeColor': '选取主题色',
           'pickThemeColorSub': '选一个喜欢的颜色吧',
           'applyLang': '应用语言',

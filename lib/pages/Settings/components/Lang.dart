@@ -2,12 +2,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../locale.dart';
+
+var lang = Lang().keys.keys.toList();
+
 void showLanguageSelectDialog(BuildContext context) {
   // List<String> data = AppConfig.languageSupports.keys.toList();
   showCupertinoModalPopup(
       context: context,
       builder: (context) => LanguageSelectDialog(
-            data: ['中文', 'en_US'],
+            data: lang,
           ));
 }
 
@@ -45,18 +49,19 @@ class LanguageSelectDialog extends StatelessWidget {
 
   Widget _buildItem(BuildContext context, int index) {
     Locale? l = Get.locale;
-    print(l);
-    bool checked = index == 0;
+
+    bool checked = data[index] == l.toString();
     Color color = Theme.of(context).primaryColor;
     return ListTile(
-      title: Text(data[index]),
+      title: Text(data[index].tr),
       onTap: () => _onSelect(index),
       trailing: checked ? Icon(Icons.check, size: 20, color: color) : null,
     );
   }
 
   void _onSelect(int index) {
-    var locale = Locale('en', 'US');
+    var l = data[index].split('_');
+    var locale = Locale(l[0], l[1]);
     Get.updateLocale(locale);
   }
 }

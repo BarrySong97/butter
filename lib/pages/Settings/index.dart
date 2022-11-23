@@ -1,5 +1,6 @@
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import 'components/Lang.dart';
 
@@ -25,7 +26,7 @@ class Settings extends StatelessWidget {
   Widget buildColorItem(BuildContext context) {
     return ListTile(
       onTap: () => _selectColor(context),
-      title: const Text('选取主题色'),
+      title: Text('pickThemeColor'.tr),
       subtitle: const Text('选一个喜欢的颜色吧'),
       trailing: Container(
         width: 24,
@@ -41,8 +42,8 @@ class Settings extends StatelessWidget {
   Widget buildLocale(BuildContext context) {
     return ListTile(
       onTap: () => _selectLang(context),
-      title: const Text('应用语言'),
-      subtitle: const Text('设置本地文字语言信息'),
+      title: Text('applyLang'.tr),
+      subtitle: Text('applyLangSub'.tr),
       trailing: Container(
         width: 24,
         height: 24,
@@ -80,5 +81,7 @@ class Settings extends StatelessWidget {
       constraints:
           const BoxConstraints(minHeight: 300, minWidth: 320, maxWidth: 320),
     );
+
+    Get.changeTheme(ThemeData(primaryColor: newColor));
   }
 }
