@@ -13,7 +13,7 @@ class Settings extends StatelessWidget {
         elevation: 0,
         leading: const BackButton(color: Colors.black),
         title: Text(
-          "设置",
+          "settingsTitle".tr,
           style: TextStyle(color: Colors.black, fontSize: 16),
         ),
       ),
@@ -27,7 +27,7 @@ class Settings extends StatelessWidget {
     return ListTile(
       onTap: () => _selectColor(context),
       title: Text('pickThemeColor'.tr),
-      subtitle: const Text('选一个喜欢的颜色吧'),
+      subtitle: Text('pickThemeColorSub'.tr),
       trailing: Container(
         width: 24,
         height: 24,

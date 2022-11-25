@@ -14,8 +14,8 @@ void main() {
   runApp(GetMaterialApp(
     debugShowCheckedModeBanner: false,
     theme: ThemeData(
-      primarySwatch: Colors.blue,
-    ),
+        primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: const Color(0xff1a1a1a)),
     translations: Lang(),
     locale: const Locale(
         'zh', 'CN'), // translations will be displayed in that locale

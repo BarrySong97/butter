@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lipomo/components/Timer.dart';
+import 'package:lipomo/pages/Home/components/WeekItem.dart';
 
 import '../../components/ButtonTools.dart';
 
@@ -13,19 +14,41 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
+class HabbitWeekItem {
+  final String name;
+  final List<int> checked;
+
+  const HabbitWeekItem({required this.name, required this.checked});
+}
+
 class _HomePageState extends State<HomePage> {
   StopWatchType _type = StopWatchType.none;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: const Color(0xff1a1a1a),
         elevation: 0,
+        centerTitle: true,
+        title: Text(
+          'habbitsTitle'.tr,
+          style: const TextStyle(fontWeight: FontWeight.w600, letterSpacing: 4),
+        ),
         actions: buildAction(),
       ),
-      body: Column(
-          children: [buildStopwatchPanel(), buildTools(StopWatchType.stopped)]),
+      body: Container(
+        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        child: buildList(),
+      ),
     );
+  }
+
+  Widget buildList() {
+    return WeekItem();
+  }
+
+  Widget buildItem(HabbitWeekItem item) {
+    return WeekItem();
   }
 
   List<Widget> buildAction() {
@@ -34,61 +57,9 @@ class _HomePageState extends State<HomePage> {
         onTap: () => {Get.toNamed("/settings")},
         child: const Padding(
           padding: EdgeInsets.all(16),
-          child: Icon(Icons.settings, color: Color(0xff262626)),
+          child: Icon(Icons.settings, color: Colors.white),
         ),
       )
     ];
-  }
-
-  List<PopupMenuEntry<String>> _buildItem(BuildContext context) {
-    return const [
-      PopupMenuItem<String>(
-        value: "设置",
-        child: Center(child: Text("设置")),
-      )
-    ];
-  }
-
-  void _onSelectItem(String value) {}
-
-  Widget buildStopwatchPanel() {
-    double radius = MediaQuery.of(context).size.width / 2 * 0.75;
-    return Container(
-      height: radius * 2,
-      width: MediaQuery.of(context).size.height,
-      // color: Colors.blue,
-      child: Timer(),
-    );
-  }
-
-  Widget buildRecordPanel() {
-    return Expanded(
-      child: Container(
-        color: Colors.red,
-      ),
-    );
-  }
-
-  Widget buildTools(StopWatchType state) {
-    return ButtonTools(
-      state: _type,
-      onRecoder: onRecoder,
-      onReset: onReset,
-      toggle: toggle,
-    );
-  }
-
-  void onReset() {
-    setState(() {
-      _type = StopWatchType.none;
-    });
-  }
-
-  void onRecoder() {}
-  void toggle() {
-    bool running = _type == StopWatchType.running;
-    setState(() {
-      _type = running ? StopWatchType.stopped : StopWatchType.running;
-    });
   }
 }
