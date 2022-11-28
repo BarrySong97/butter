@@ -4,6 +4,7 @@ import 'package:lipomo/components/Timer.dart';
 import 'package:lipomo/pages/Home/components/WeekItem.dart';
 
 import '../../components/ButtonTools.dart';
+import 'components/Add.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
@@ -37,18 +38,62 @@ class _HomePageState extends State<HomePage> {
         actions: buildAction(),
       ),
       body: Container(
-        padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-        child: buildList(),
+        padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+        child: buildList(context),
       ),
     );
   }
 
-  Widget buildList() {
-    return WeekItem();
+  Widget buildList(BuildContext context) {
+    return ListView.separated(
+      shrinkWrap: true,
+      // padding: const EdgeInsets.all(20.0),
+      // children: [buildList(), buildList()],
+      itemCount: 6,
+      itemBuilder: (BuildContext context, int index) {
+        if (index == 5) {
+          return Column(children: [
+            WeekItem(),
+            SizedBox(
+              height: 16,
+            ),
+            buildAddButton(context),
+            SizedBox(
+              height: 8,
+            ),
+          ]);
+        }
+        return WeekItem();
+      },
+      //分割器构造器
+      separatorBuilder: (BuildContext context, int index) {
+        return SizedBox(
+          height: 16,
+        );
+      },
+    );
   }
 
-  Widget buildItem(HabbitWeekItem item) {
-    return WeekItem();
+  Widget buildAddButton(BuildContext context) {
+    return GestureDetector(
+        child: Row(
+          children: [
+            Icon(
+              Icons.add_circle,
+              color: Colors.white,
+              size: 16,
+            ),
+            SizedBox(
+              width: 4,
+            ),
+            Text(
+              'addHabit'.tr,
+              style: TextStyle(color: Colors.white),
+            )
+          ],
+          mainAxisAlignment: MainAxisAlignment.center,
+        ),
+        onTap: () => showAddHabitDialog(context));
   }
 
   List<Widget> buildAction() {
