@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lipomo/components/Timer.dart';
+import 'package:lipomo/db.dart';
 import 'package:lipomo/pages/Home/components/WeekItem.dart';
 
 import '../../components/ButtonTools.dart';
+import '../../models/Habit.dart';
 import 'components/Add.dart';
+
+final configProvider = FutureProvider<List<Habit>>((ref) async {
+  final db = await DBManager.instance.database;
+
+  final habitRep = db.collection<Habit>();
+  // final list = habitRep.;
+  // return list;
+});
 
 class HomePage extends StatefulWidget {
   const HomePage({

@@ -14,11 +14,15 @@ class Lang extends Translations {
           'addNewHabbit': 'New Habit',
           'cancel': 'Cancel',
           'habbitTitlePlaceHolder': 'Title',
-          'done': 'Done'
+          'done': 'Done',
+          'addSelectColorTitle': 'select a color',
+          'addSelectColorSubTitle': 'choose a sub color'
         },
         'zh_CN': {
           'zh_CN': '中文',
           'cancel': '取消',
+          'addSelectColorTitle': '选择一个颜色',
+          'addSelectColorSubTitle': '选择颜色的深浅',
           'habbitTitlePlaceHolder': '名称',
           'addNewHabbit': '新习惯',
           'done': '确定',
