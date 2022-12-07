@@ -6,23 +6,33 @@ import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:lipomo/models/Habit.dart';
+import 'package:lipomo/services/HabitService.dart';
 
 import '../../../db.dart';
+import '../index.dart';
 
 void showAddHabitDialog(BuildContext context) {
   // List<String> data = AppConfig.languageSupports.keys.toList();
   showCupertinoModalPopup(context: context, builder: (context) => AddHabit());
 }
 
-class AddHabit extends StatefulWidget {
+class AddHabit extends ConsumerStatefulWidget {
   AddHabit({Key? key}) : super(key: key);
 
   @override
-  State<AddHabit> createState() => _AddHabit();
+  ConsumerState<AddHabit> createState() => _AddHabit();
 }
 
-class _AddHabit extends State<AddHabit> {
-  Habit habit = Habit()..color = Colors.blue.hex;
+class _AddHabit extends ConsumerState<AddHabit> {
+  Habit habit = Habit()
+    ..color = Colors.blue.hex
+    ..dates = [];
+  @override
+  void initState() {
+    super.initState();
+    // "ref" can be used in all life-cycles of a StatefulWidget.
+    ref.read(habitProvider);
+  }
 
   @override
   Widget build(
@@ -137,11 +147,8 @@ class _AddHabit extends State<AddHabit> {
   }
 
   Future<void> addHabit(BuildContext context) async {
-    final db = await DBManager.instance.database;
-    final habitRep = db.collection<Habit>();
-    await db.writeTxn(() async {
-      await habitRep.put(habit);
-    });
+    HabitService.addHabit(habit);
     Navigator.pop(context);
+    ref.invalidate(habitProvider);
   }
 }

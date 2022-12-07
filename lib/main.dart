@@ -5,11 +5,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'locale.dart';
 import 'pages/Home/index.dart';
 
-class AppController extends GetxController {
-  var thmeColor = 0xff2196f3;
-  changeThemeColor(int color) => {thmeColor = color};
-}
-
 void main() {
   runApp(
     ProviderScope(
@@ -24,7 +19,7 @@ void main() {
       fallbackLocale: const Locale('en',
           'US'), // specify the fallback locale in case an invalid locale is selected.
       getPages: routes,
-      home: const HomePage(),
+      home: HomePage(),
     )),
   );
 }

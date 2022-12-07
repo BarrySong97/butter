@@ -1,30 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:isar/isar.dart';
 import 'package:lipomo/components/Timer.dart';
 import 'package:lipomo/db.dart';
 import 'package:lipomo/pages/Home/components/WeekItem.dart';
+import 'package:lipomo/services/HabitService.dart';
 
 import '../../components/ButtonTools.dart';
 import '../../models/Habit.dart';
 import 'components/Add.dart';
 
-final configProvider = FutureProvider<List<Habit>>((ref) async {
-  final db = await DBManager.instance.database;
-
-  final habitRep = db.collection<Habit>();
-  // final list = habitRep.;
-  // return list;
+final habitProvider = FutureProvider<List<Habit?>>((ref) async {
+  return HabitService.getAll();
 });
-
-class HomePage extends StatefulWidget {
-  const HomePage({
-    super.key,
-  });
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
 
 class HabbitWeekItem {
   final String name;
@@ -33,10 +22,10 @@ class HabbitWeekItem {
   const HabbitWeekItem({required this.name, required this.checked});
 }
 
-class _HomePageState extends State<HomePage> {
-  StopWatchType _type = StopWatchType.none;
+class HomePage extends HookConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    AsyncValue<List<Habit?>> habitList = ref.watch(habitProvider);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xff1a1a1a),
@@ -50,21 +39,42 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Container(
         padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
-        child: buildList(context),
+        child: habitList.when(
+          loading: () => const CircularProgressIndicator(),
+          error: (err, stack) => Text('Error: $err'),
+          data: (list) {
+            return buildList(context, list, ref);
+          },
+        ),
       ),
     );
   }
 
-  Widget buildList(BuildContext context) {
+  Widget buildList(
+      BuildContext context, List<Habit?> habitList, WidgetRef ref) {
+    if (habitList.isEmpty) {
+      return Center(
+        child: buildAddButton(context),
+      );
+    }
     return ListView.separated(
       shrinkWrap: true,
-      // padding: const EdgeInsets.all(20.0),
-      // children: [buildList(), buildList()],
-      itemCount: 6,
+      itemCount: habitList.length,
       itemBuilder: (BuildContext context, int index) {
-        if (index == 5) {
+        final item = habitList[index];
+        if (item == null) {
+          return buildAddButton(context);
+        }
+        // if (item ==)
+        if (index == habitList.length - 1) {
           return Column(children: [
-            WeekItem(),
+            WeekItem(
+              item: item,
+              onToggle: () async {
+                await HabitService.update(item);
+                ref.invalidate(habitProvider);
+              },
+            ),
             SizedBox(
               height: 16,
             ),
@@ -74,7 +84,13 @@ class _HomePageState extends State<HomePage> {
             ),
           ]);
         }
-        return WeekItem();
+        return WeekItem(
+          item: item,
+          onToggle: () async {
+            await HabitService.update(item);
+            ref.invalidate(habitProvider);
+          },
+        );
       },
       //分割器构造器
       separatorBuilder: (BuildContext context, int index) {

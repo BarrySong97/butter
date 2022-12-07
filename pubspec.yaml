@@ -27,7 +27,7 @@ environment:
 # consider running `flutter pub upgrade --major-versions`. Alternatively,
 # dependencies can be manually updated by changing the version numbers below to
 # the latest version available on pub.dev. To see which dependencies have newer
-isar_version: &isar_version 3.0.0 # define the version to be used
+isar_version: &isar_version 3.0.5 # define the version to be used
 # versions available, run `flutter pub outdated`.
 dependencies:
   flutter:
@@ -40,6 +40,7 @@ dependencies:
   flex_color_picker: ^2.6.0
   flutter_hooks: ^0.18.0
   hooks_riverpod: ^2.1.1
+  flutter_calendar_carousel: 2.4.1
   isar: *isar_version
   isar_flutter_libs: *isar_version # contains Isar Core
 
