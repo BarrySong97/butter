@@ -6,34 +6,43 @@ import 'package:lipomo/pages/Home/index.dart';
 
 List<String> weekData = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
-List<CheckedItem> getThisWeek(List<CheckedItem> list) {
+List<DateTime> getThisWeek(List<DateTime> list) {
   final DateTime d = DateTime.now();
   int weekDay = d.weekday;
   final DateTime firstDayOfWeek = d.subtract(Duration(days: weekDay - 1));
   final DateTime lastDayOfWeek = firstDayOfWeek.add(Duration(days: 6));
-  final bool isb = list[6].date?.isBefore(lastDayOfWeek) ?? false;
 
-  final List<CheckedItem> res = list
+  final List<DateTime> res = list
       .where((element) =>
-          ((element.date?.isAfter(firstDayOfWeek) ?? false) &&
-              (element.date?.isBefore(lastDayOfWeek) ?? false)) ||
-          DateUtils.isSameDay(firstDayOfWeek, element.date) ||
-          DateUtils.isSameDay(lastDayOfWeek, element.date))
+          element.isAfter(firstDayOfWeek) && element.isBefore(lastDayOfWeek) ||
+          DateUtils.isSameDay(firstDayOfWeek, element) ||
+          DateUtils.isSameDay(lastDayOfWeek, element))
       .toList();
   return res;
+}
+
+List<DateTime> getThisWeekDays() {
+  final DateTime d = DateTime.now();
+  int weekDay = d.weekday;
+  final DateTime firstDayOfWeek = d.subtract(Duration(days: weekDay - 1));
+  final DateTime lastDayOfWeek = firstDayOfWeek.add(Duration(days: 6));
+  final List<DateTime> dateList = [firstDayOfWeek];
+  for (int i = 1; i <= 6; i++) {
+    dateList.add(firstDayOfWeek.add(Duration(days: i)));
+  }
+  return dateList;
 }
 
 class WeekItem extends StatelessWidget {
   // final HabbitWeekItem item;
   final Habit item;
-  late List<CheckedItem> dates;
-  Function onToggle;
+  late List<DateTime> checkedDates;
+  List<DateTime> weekDays = getThisWeekDays();
+  Function(DateTime date, bool checked) onToggle;
 
   WeekItem({Key? key, required this.item, required this.onToggle})
       : super(key: key) {
-    if (item.dates != null) {
-      dates = getThisWeek(item.dates ?? []);
-    }
+    checkedDates = getThisWeek(item.dates ?? []);
   }
   @override
   Widget build(BuildContext context) {
@@ -73,22 +82,23 @@ class WeekItem extends StatelessWidget {
   Widget _buildWeek() {
     return Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: weekData
+        children: weekDays
             .asMap()
             .entries
-            .map((e) => _buildWeekItem(e.value, 1, e.key))
+            .map((e) => _buildWeekItem(e.value, e.key))
             .toList());
   }
 
-  Widget _buildWeekItem(String week, int date, int idx) {
-    final CheckedItem item = dates[idx];
-    final String day = item.date?.day.toString() ?? '';
-    final bool isChecked = item.checked ?? false;
+  Widget _buildWeekItem(DateTime date, int idx) {
+    final DateTime? checkDate =
+        checkedDates.isNotEmpty ? checkedDates[idx] : null;
+    final String day = date.day.toString();
+    final bool checked = DateUtils.isSameDay(date, checkDate);
 
     return Container(
         child: Column(children: [
       Text(
-        week.tr,
+        weekData[idx].tr,
         style: const TextStyle(
             color: Color(0xff686868),
             fontSize: 12,
@@ -99,8 +109,7 @@ class WeekItem extends StatelessWidget {
       ),
       GestureDetector(
         onTap: () {
-          item.checked = !(item.checked ?? false);
-          onToggle();
+          onToggle(date, checked);
         },
         child: Container(
           width: 18,
@@ -113,7 +122,7 @@ class WeekItem extends StatelessWidget {
           ),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(50),
-              color: isChecked ? Color(0xff5666f0) : Color(0xff343434)),
+              color: checked ? Color(0xff5666f0) : Color(0xff343434)),
         ),
       )
     ]));

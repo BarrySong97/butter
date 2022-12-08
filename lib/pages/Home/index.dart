@@ -70,7 +70,7 @@ class HomePage extends HookConsumerWidget {
           return Column(children: [
             WeekItem(
               item: item,
-              onToggle: () async {
+              onToggle: (DateTime date, bool checked) async {
                 await HabitService.update(item);
                 ref.invalidate(habitProvider);
               },
@@ -86,9 +86,8 @@ class HomePage extends HookConsumerWidget {
         }
         return WeekItem(
           item: item,
-          onToggle: () async {
+          onToggle: (DateTime date, bool checked) async {
             await HabitService.update(item);
-            ref.invalidate(habitProvider);
           },
         );
       },

@@ -25,8 +25,7 @@ const HabitSchema = CollectionSchema(
     r'dates': PropertySchema(
       id: 1,
       name: r'dates',
-      type: IsarType.objectList,
-      target: r'CheckedItem',
+      type: IsarType.dateTimeList,
     ),
     r'name': PropertySchema(
       id: 2,
@@ -55,7 +54,7 @@ const HabitSchema = CollectionSchema(
     )
   },
   links: {},
-  embeddedSchemas: {r'CheckedItem': CheckedItemSchema},
+  embeddedSchemas: {},
   getId: _habitGetId,
   getLinks: _habitGetLinks,
   attach: _habitAttach,
@@ -75,17 +74,9 @@ int _habitEstimateSize(
     }
   }
   {
-    final list = object.dates;
-    if (list != null) {
-      bytesCount += 3 + list.length * 3;
-      {
-        final offsets = allOffsets[CheckedItem]!;
-        for (var i = 0; i < list.length; i++) {
-          final value = list[i];
-          bytesCount +=
-              CheckedItemSchema.estimateSize(value, offsets, allOffsets);
-        }
-      }
+    final value = object.dates;
+    if (value != null) {
+      bytesCount += 3 + value.length * 8;
     }
   }
   {
@@ -104,12 +95,7 @@ void _habitSerialize(
   Map<Type, List<int>> allOffsets,
 ) {
   writer.writeString(offsets[0], object.color);
-  writer.writeObjectList<CheckedItem>(
-    offsets[1],
-    allOffsets,
-    CheckedItemSchema.serialize,
-    object.dates,
-  );
+  writer.writeDateTimeList(offsets[1], object.dates);
   writer.writeString(offsets[2], object.name);
 }
 
@@ -121,12 +107,7 @@ Habit _habitDeserialize(
 ) {
   final object = Habit();
   object.color = reader.readStringOrNull(offsets[0]);
-  object.dates = reader.readObjectList<CheckedItem>(
-    offsets[1],
-    CheckedItemSchema.deserialize,
-    allOffsets,
-    CheckedItem(),
-  );
+  object.dates = reader.readDateTimeList(offsets[1]);
   object.id = id;
   object.name = reader.readStringOrNull(offsets[2]);
   return object;
@@ -142,12 +123,7 @@ P _habitDeserializeProp<P>(
     case 0:
       return (reader.readStringOrNull(offset)) as P;
     case 1:
-      return (reader.readObjectList<CheckedItem>(
-        offset,
-        CheckedItemSchema.deserialize,
-        allOffsets,
-        CheckedItem(),
-      )) as P;
+      return (reader.readDateTimeList(offset)) as P;
     case 2:
       return (reader.readStringOrNull(offset)) as P;
     default:
@@ -565,6 +541,59 @@ extension HabitQueryFilter on QueryBuilder<Habit, Habit, QFilterCondition> {
     });
   }
 
+  QueryBuilder<Habit, Habit, QAfterFilterCondition> datesElementEqualTo(
+      DateTime value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'dates',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition> datesElementGreaterThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'dates',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition> datesElementLessThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'dates',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Habit, Habit, QAfterFilterCondition> datesElementBetween(
+    DateTime lower,
+    DateTime upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'dates',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<Habit, Habit, QAfterFilterCondition> datesLengthEqualTo(
       int length) {
     return QueryBuilder.apply(this, (query) {
@@ -846,14 +875,7 @@ extension HabitQueryFilter on QueryBuilder<Habit, Habit, QFilterCondition> {
   }
 }
 
-extension HabitQueryObject on QueryBuilder<Habit, Habit, QFilterCondition> {
-  QueryBuilder<Habit, Habit, QAfterFilterCondition> datesElement(
-      FilterQuery<CheckedItem> q) {
-    return QueryBuilder.apply(this, (query) {
-      return query.object(q, r'dates');
-    });
-  }
-}
+extension HabitQueryObject on QueryBuilder<Habit, Habit, QFilterCondition> {}
 
 extension HabitQueryLinks on QueryBuilder<Habit, Habit, QFilterCondition> {}
 
@@ -929,6 +951,12 @@ extension HabitQueryWhereDistinct on QueryBuilder<Habit, Habit, QDistinct> {
     });
   }
 
+  QueryBuilder<Habit, Habit, QDistinct> distinctByDates() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'dates');
+    });
+  }
+
   QueryBuilder<Habit, Habit, QDistinct> distinctByName(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -950,7 +978,7 @@ extension HabitQueryProperty on QueryBuilder<Habit, Habit, QQueryProperty> {
     });
   }
 
-  QueryBuilder<Habit, List<CheckedItem>?, QQueryOperations> datesProperty() {
+  QueryBuilder<Habit, List<DateTime>?, QQueryOperations> datesProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'dates');
     });
@@ -962,182 +990,3 @@ extension HabitQueryProperty on QueryBuilder<Habit, Habit, QQueryProperty> {
     });
   }
 }
-
-// **************************************************************************
-// IsarEmbeddedGenerator
-// **************************************************************************
-
-// coverage:ignore-file
-// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters
-
-const CheckedItemSchema = Schema(
-  name: r'CheckedItem',
-  id: 8478264561590951640,
-  properties: {
-    r'checked': PropertySchema(
-      id: 0,
-      name: r'checked',
-      type: IsarType.bool,
-    ),
-    r'date': PropertySchema(
-      id: 1,
-      name: r'date',
-      type: IsarType.dateTime,
-    )
-  },
-  estimateSize: _checkedItemEstimateSize,
-  serialize: _checkedItemSerialize,
-  deserialize: _checkedItemDeserialize,
-  deserializeProp: _checkedItemDeserializeProp,
-);
-
-int _checkedItemEstimateSize(
-  CheckedItem object,
-  List<int> offsets,
-  Map<Type, List<int>> allOffsets,
-) {
-  var bytesCount = offsets.last;
-  return bytesCount;
-}
-
-void _checkedItemSerialize(
-  CheckedItem object,
-  IsarWriter writer,
-  List<int> offsets,
-  Map<Type, List<int>> allOffsets,
-) {
-  writer.writeBool(offsets[0], object.checked);
-  writer.writeDateTime(offsets[1], object.date);
-}
-
-CheckedItem _checkedItemDeserialize(
-  Id id,
-  IsarReader reader,
-  List<int> offsets,
-  Map<Type, List<int>> allOffsets,
-) {
-  final object = CheckedItem();
-  object.checked = reader.readBoolOrNull(offsets[0]);
-  object.date = reader.readDateTimeOrNull(offsets[1]);
-  return object;
-}
-
-P _checkedItemDeserializeProp<P>(
-  IsarReader reader,
-  int propertyId,
-  int offset,
-  Map<Type, List<int>> allOffsets,
-) {
-  switch (propertyId) {
-    case 0:
-      return (reader.readBoolOrNull(offset)) as P;
-    case 1:
-      return (reader.readDateTimeOrNull(offset)) as P;
-    default:
-      throw IsarError('Unknown property with id $propertyId');
-  }
-}
-
-extension CheckedItemQueryFilter
-    on QueryBuilder<CheckedItem, CheckedItem, QFilterCondition> {
-  QueryBuilder<CheckedItem, CheckedItem, QAfterFilterCondition>
-      checkedIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'checked',
-      ));
-    });
-  }
-
-  QueryBuilder<CheckedItem, CheckedItem, QAfterFilterCondition>
-      checkedIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'checked',
-      ));
-    });
-  }
-
-  QueryBuilder<CheckedItem, CheckedItem, QAfterFilterCondition> checkedEqualTo(
-      bool? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'checked',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<CheckedItem, CheckedItem, QAfterFilterCondition> dateIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'date',
-      ));
-    });
-  }
-
-  QueryBuilder<CheckedItem, CheckedItem, QAfterFilterCondition>
-      dateIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'date',
-      ));
-    });
-  }
-
-  QueryBuilder<CheckedItem, CheckedItem, QAfterFilterCondition> dateEqualTo(
-      DateTime? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'date',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<CheckedItem, CheckedItem, QAfterFilterCondition> dateGreaterThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'date',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<CheckedItem, CheckedItem, QAfterFilterCondition> dateLessThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'date',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<CheckedItem, CheckedItem, QAfterFilterCondition> dateBetween(
-    DateTime? lower,
-    DateTime? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'date',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-}
-
-extension CheckedItemQueryObject
-    on QueryBuilder<CheckedItem, CheckedItem, QFilterCondition> {}
