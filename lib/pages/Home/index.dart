@@ -71,7 +71,7 @@ class HomePage extends HookConsumerWidget {
             WeekItem(
               item: item,
               onToggle: (DateTime date, bool checked) async {
-                await HabitService.update(item);
+                await HabitService.check(item, checked, date);
                 ref.invalidate(habitProvider);
               },
             ),
@@ -87,7 +87,8 @@ class HomePage extends HookConsumerWidget {
         return WeekItem(
           item: item,
           onToggle: (DateTime date, bool checked) async {
-            await HabitService.update(item);
+            await HabitService.check(item, checked, date);
+            ref.invalidate(habitProvider);
           },
         );
       },

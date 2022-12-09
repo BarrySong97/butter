@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
 import 'package:lipomo/models/Habit.dart';
 import 'package:lipomo/services/HabitService.dart';
+import 'package:lipomo/utils/Color.dart';
 
 import '../../../db.dart';
 import '../index.dart';
@@ -118,8 +119,10 @@ class _AddHabit extends ConsumerState<AddHabit> {
   Widget buildColorPicker() {
     return ColorPicker(
       // Use the screenPickerColor as start color.
-      color: Colors.blue,
-      padding: EdgeInsets.all(0),
+      color: habit.color != null
+          ? Color(HexColor.getColorFromHex(habit.color))
+          : Colors.blue,
+      padding: EdgeInsets.symmetric(horizontal: 5),
 
       // // Update the screenPickerColor using the callback.
       onColorChanged: (Color color) => {
@@ -147,8 +150,9 @@ class _AddHabit extends ConsumerState<AddHabit> {
   }
 
   Future<void> addHabit(BuildContext context) async {
-    HabitService.addHabit(habit);
-    Navigator.pop(context);
+    await HabitService.addHabit(habit);
+    await Future.microtask(
+        () => Navigator.of(context).pop('Async thing is done!'));
     ref.invalidate(habitProvider);
   }
 }

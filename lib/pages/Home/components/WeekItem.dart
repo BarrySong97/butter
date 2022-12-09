@@ -4,6 +4,8 @@ import 'package:lipomo/models/Habit.dart';
 import 'package:lipomo/pages/Home/components/Calendar.dart';
 import 'package:lipomo/pages/Home/index.dart';
 
+import '../../../utils/Color.dart';
+
 List<String> weekData = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 List<DateTime> getThisWeek(List<DateTime> list) {
@@ -48,6 +50,7 @@ class WeekItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPress: () => {showCalendarView(context, item)},
+      onTap: () => {Get.toNamed("/detail/${item.id}")},
       child: Container(
         height: 105,
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -90,10 +93,12 @@ class WeekItem extends StatelessWidget {
   }
 
   Widget _buildWeekItem(DateTime date, int idx) {
-    final DateTime? checkDate =
-        checkedDates.isNotEmpty ? checkedDates[idx] : null;
     final String day = date.day.toString();
-    final bool checked = DateUtils.isSameDay(date, checkDate);
+    final bool checked = checkedDates
+        .where((element) => DateUtils.isSameDay(date, element))
+        .isNotEmpty;
+
+    final Color checkedColor = HexColor.getHabitColor(item, checked);
 
     return Container(
         child: Column(children: [
@@ -112,17 +117,16 @@ class WeekItem extends StatelessWidget {
           onToggle(date, checked);
         },
         child: Container(
-          width: 18,
-          height: 18,
+          width: 20,
+          height: 20,
           alignment: Alignment.center,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(50), color: checkedColor),
           child: Text(
             day,
-            style: TextStyle(
-                color: Colors.white, fontSize: 12, fontWeight: FontWeight.w500),
+            style: const TextStyle(
+                color: Colors.white, fontSize: 10, fontWeight: FontWeight.w500),
           ),
-          decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(50),
-              color: checked ? Color(0xff5666f0) : Color(0xff343434)),
         ),
       )
     ]));

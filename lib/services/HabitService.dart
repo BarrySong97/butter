@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 import 'package:lipomo/db.dart';
 import 'package:lipomo/models/Habit.dart';
@@ -52,7 +53,7 @@ class HabitService {
     final _db = await db;
     final _repo = await repo;
     if (checked) {
-      item.dates?.remove(date);
+      item.dates?.removeWhere((element) => DateUtils.isSameDay(element, date));
     } else {
       item.dates?.add(date);
     }
