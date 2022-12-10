@@ -53,8 +53,9 @@ class HeatMapDay extends StatelessWidget {
         opacity: opacity,
         duration: animationDuration,
         child: Text(
-          currentDay.toString(),
-          style: TextStyle(fontWeight: fontWeight, color: textColor),
+          value.toString(),
+          style: TextStyle(
+              fontWeight: fontWeight, color: Colors.white, fontSize: size - 4),
         ),
       ),
     );

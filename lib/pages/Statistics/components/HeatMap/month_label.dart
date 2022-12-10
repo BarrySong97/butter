@@ -20,14 +20,13 @@ class MonthLabel extends StatelessWidget {
       width: size,
       child: Stack(
         fit: StackFit.expand,
-        // overflow: Overflow.visible,
         children: <Widget>[
           Positioned(
             width: 60,
             bottom: 0,
             child: Text(
               text,
-              style: TextStyle(fontSize: size - 4, color: textColor),
+              style: TextStyle(fontSize: size - 6, color: textColor),
             ),
           )
         ],

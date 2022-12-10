@@ -16,7 +16,7 @@ class HeatMap extends StatelessWidget {
         TimeUtils.removeTime(DateTime.now()): 4,
       },
       colorThresholds: {
-        1: Colors.green,
+        1: Colors.blue,
       },
       weekDaysLabels: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
       monthsLabels: [
@@ -34,8 +34,8 @@ class HeatMap extends StatelessWidget {
         "Nov",
         "Dec",
       ],
-      squareSize: 12.0,
-      textOpacity: -1.3,
+      squareSize: 14.0,
+      textOpacity: 1,
       labelTextColor: Colors.blueGrey,
       dayTextColor: Colors.blue,
     );

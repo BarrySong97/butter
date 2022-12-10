@@ -148,6 +148,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.0.5"
+  custom_sliding_segmented_control:
+    dependency: "direct main"
+    description:
+      name: custom_sliding_segmented_control
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.7.3"
   dart_style:
     dependency: transitive
     description:
@@ -162,13 +169,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.1.0"
-  dropdown_button2:
-    dependency: "direct main"
-    description:
-      name: dropdown_button2
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.9.2"
   equatable:
     dependency: transitive
     description:
@@ -237,13 +237,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.4.1"
-  flutter_heatmap_calendar:
-    dependency: "direct main"
-    description:
-      name: flutter_heatmap_calendar
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "1.0.5"
   flutter_hooks:
     dependency: "direct main"
     description:

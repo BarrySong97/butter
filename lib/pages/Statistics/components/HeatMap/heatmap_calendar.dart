@@ -39,6 +39,8 @@ class HeatMapCalendar extends StatefulWidget {
   /// The color of the text that identifies the days
   final Color dayTextColor;
 
+  final bool showDay;
+
   /// Helps avoiding overspacing issues
   final double safetyMargin;
 
@@ -49,6 +51,7 @@ class HeatMapCalendar extends StatefulWidget {
       this.weekDaysLabels = TimeUtils.defaultWeekLabels,
       this.monthsLabels = TimeUtils.defaultMonthsLabels,
       this.squareSize = 16,
+      this.showDay = false,
       this.textOpacity = 0.2,
       this.labelTextColor = Colors.black,
       this.dayTextColor = Colors.black,
@@ -96,17 +99,17 @@ class HeatMapCalendarState extends State<HeatMapCalendar> {
             width: constraints.maxWidth,
             child: Row(
               children: <Widget>[
-                WeekLabels(
-                  weekDaysLabels: widget.weekDaysLabels,
-                  squareSize: widget.squareSize,
-                  labelTextColor: widget.labelTextColor,
-                ),
+                // WeekLabels(
+                //   weekDaysLabels: widget.weekDaysLabels,
+                //   squareSize: widget.squareSize,
+                //   labelTextColor: widget.labelTextColor,
+                // ),
                 WeekColumns(
                   squareSize: widget.squareSize,
                   labelTextColor: widget.labelTextColor,
                   input: widget.input,
                   colorThresholds: widget.colorThresholds,
-                  currentOpacity: currentOpacity,
+                  currentOpacity: widget.textOpacity,
                   monthLabels: widget.monthsLabels,
                   dayTextColor: widget.dayTextColor,
                   columnsToCreate: getColumnsToCreate(constraints.maxWidth) - 1,

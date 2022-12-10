@@ -72,7 +72,8 @@ class _LineChartSample2State extends State<LineChartSample2> {
         text = '50k';
         break;
       default:
-        text = '50k';
+        // text = '50k';
+        text = '';
     }
 
     return Text(text, style: style, textAlign: TextAlign.left);

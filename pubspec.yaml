@@ -42,9 +42,8 @@ dependencies:
   hooks_riverpod: ^2.1.1
   flutter_calendar_carousel: 2.4.1
   fl_chart: 0.55.2
-  dropdown_button2: 1.9.2
+  custom_sliding_segmented_control: ^1.7.3
   isar: *isar_version
-  flutter_heatmap_calendar: ^1.0.5
   isar_flutter_libs: *isar_version # contains Isar Core
 
 dev_dependencies:

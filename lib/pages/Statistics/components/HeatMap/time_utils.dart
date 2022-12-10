@@ -33,7 +33,7 @@ class TimeUtils {
     return safeSubtract(
         today,
         Duration(
-            days: (today.weekday % DateTime.daysPerWeek),
+            days: today.weekday + 1,
             hours: today.hour,
             minutes: today.minute,
             seconds: today.second,

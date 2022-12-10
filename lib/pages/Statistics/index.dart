@@ -1,11 +1,14 @@
-import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lipomo/pages/Statistics/components/HeatMap.dart';
+import 'package:lipomo/pages/Statistics/components/InfoCard.dart';
 
 import '../../models/Habit.dart';
 import '../Home/index.dart';
+import 'components/HeatMap/week_labels.dart';
 import 'components/LineChart.dart';
 
 class Statistics extends HookConsumerWidget {
@@ -27,9 +30,15 @@ class Statistics extends HookConsumerWidget {
       ),
       body: Container(
           padding: EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
+          child: ListView(
             children: [
-              buildInfoCard(),
+              buildDateInfoCard(),
+              const SizedBox(height: 16),
+              buildMonthInfoCard(),
+              const SizedBox(height: 16),
+              buildYearInfoCard(),
+              const SizedBox(height: 16),
+              buildAllInfoCard(),
               const SizedBox(height: 16),
               buildLineCard(),
               const SizedBox(height: 16),
@@ -40,34 +49,33 @@ class Statistics extends HookConsumerWidget {
     );
   }
 
-  Widget buildInfoCard() {
-    return Container(
-      alignment: Alignment.center,
-      padding: EdgeInsets.symmetric(horizontal: 0, vertical: 12),
-      decoration: BoxDecoration(
-          color: const Color(0xff292929),
-          borderRadius: BorderRadius.circular(6)),
-      child: Row(
-        children: [
-          Expanded(child: buildInfoItem('1', 'startFrom')),
-          SizedBox(
-              width: 1,
-              height: 24,
-              child: ColoredBox(color: Color(0xff3a3a3a))),
-          Expanded(child: buildInfoItem('24', 'monthDays')),
-          SizedBox(
-              width: 1,
-              height: 24,
-              child: ColoredBox(color: Color(0xff3a3a3a))),
-          Expanded(child: buildInfoItem('120', 'yearDays')),
-          SizedBox(
-              width: 1,
-              height: 24,
-              child: ColoredBox(color: Color(0xff3a3a3a))),
-          Expanded(child: buildInfoItem('20%', 'percent'))
-        ],
-      ),
+  Widget buildDateInfoCard() {
+    return Row(
+      children: [
+        Expanded(
+          child:
+              InfoCard(content: buildInfoItem('2022-10-17', 'createStartFrom')),
+        ),
+        SizedBox(
+          width: 16,
+        ),
+        Expanded(
+            child: InfoCard(
+                content: buildInfoItem('2022-10-17', 'trackStartFrom')))
+      ],
     );
+  }
+
+  Widget buildMonthInfoCard() {
+    return InfoCard(title: 'thisMonth'.tr, content: buildNumberInfo());
+  }
+
+  Widget buildYearInfoCard() {
+    return InfoCard(title: 'thisYear'.tr, content: buildNumberInfo());
+  }
+
+  Widget buildAllInfoCard() {
+    return InfoCard(title: 'thisAll'.tr, content: buildNumberInfo());
   }
 
   Widget buildInfoItem(String value, String title) {
@@ -89,42 +97,90 @@ class Statistics extends HookConsumerWidget {
     ));
   }
 
-  Widget buildLineCard() {
-    return Container(
-      decoration: BoxDecoration(
-          color: const Color(0xff292929),
-          borderRadius: BorderRadius.circular(6)),
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 0),
-      child: Column(
-        children: [
-          buildLineCardHeader(),
-          LineChartSample2(),
-          SizedBox(height: 12)
-        ],
-      ),
-    );
-  }
-
-  Widget buildLineCardHeader() {
+  Widget buildNumberInfo() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          'statistic'.tr,
-          style: TextStyle(color: Colors.white, fontSize: 12),
-        ),
-        DropdownButtonExample()
+        Expanded(child: buildInfoItem('24', 'trackDays')),
+        SizedBox(
+            width: 1, height: 24, child: ColoredBox(color: Color(0xff3a3a3a))),
+        Expanded(child: buildInfoItem('120', 'allDays')),
+        SizedBox(
+            width: 1, height: 24, child: ColoredBox(color: Color(0xff3a3a3a))),
+        Expanded(child: buildInfoItem('20%', 'percent'))
       ],
     );
   }
 
+  Widget buildLineCard() {
+    return InfoCard(
+      content: LineChartSample2(),
+      title: 'trend'.tr,
+      extra: CustomSlidingSegmentedControl<int>(
+        initialValue: 3,
+        height: 16,
+        children: {
+          1: Text(
+            'Week'.tr,
+            style: TextStyle(fontSize: 10),
+          ),
+          3: Text(
+            'Year'.tr,
+            style: TextStyle(fontSize: 10),
+          ),
+          2: Text(
+            'Month'.tr,
+            style: TextStyle(fontSize: 10),
+          ),
+        },
+        decoration: BoxDecoration(
+          color: CupertinoColors.lightBackgroundGray,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        thumbDecoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(6),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(.3),
+              blurRadius: 4.0,
+              spreadRadius: 1.0,
+              offset: Offset(
+                0.0,
+                2.0,
+              ),
+            ),
+          ],
+        ),
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInToLinear,
+        onValueChanged: (v) {
+          print(v);
+        },
+      ),
+    );
+  }
+
   Widget buildHeatMapCalendarCard() {
-    return Container(
-      decoration: BoxDecoration(
-          color: const Color(0xff292929),
-          borderRadius: BorderRadius.circular(6)),
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      child: HeatMap(),
+    return InfoCard(
+      title: '日历图',
+      content: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          WeekLabels(
+            weekDaysLabels: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+            squareSize: 14,
+            labelTextColor: Colors.blueGrey,
+          ),
+          Expanded(
+              child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Container(
+              width: 900,
+              child: HeatMap(),
+            ),
+          ))
+        ],
+      ),
     );
   }
 
@@ -143,48 +199,5 @@ class Statistics extends HookConsumerWidget {
         onPressed: () {},
       ),
     ];
-  }
-}
-
-class DropdownButtonExample extends StatefulWidget {
-  const DropdownButtonExample({super.key});
-
-  @override
-  State<DropdownButtonExample> createState() => _DropdownButtonExampleState();
-}
-
-List<String> list = <String>['All'.tr, 'Year'.tr, 'Month'.tr];
-
-class _DropdownButtonExampleState extends State<DropdownButtonExample> {
-  String dropdownValue = list.first;
-
-  @override
-  Widget build(BuildContext context) {
-    return DropdownButtonHideUnderline(
-      child: DropdownButton2(
-        dropdownWidth: 100,
-        items: list
-            .map((item) => DropdownMenuItem<String>(
-                  value: item,
-                  child: Text(
-                    item,
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: dropdownValue == item
-                            ? Colors.white
-                            : Colors.black),
-                  ),
-                ))
-            .toList(),
-        value: dropdownValue,
-        onChanged: (value) {
-          setState(() {
-            dropdownValue = value as String;
-          });
-        },
-        buttonHeight: 40,
-        itemHeight: 40,
-      ),
-    );
   }
 }

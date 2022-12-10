@@ -18,11 +18,11 @@ class DefaultContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         alignment: Alignment.center,
-        height: size,
-        width: size,
+        height: 14,
+        width: 14,
         child: Text(
           text,
-          style: TextStyle(color: textColor, fontSize: size - 2),
+          style: TextStyle(color: textColor, fontSize: 10),
         ),
         margin: EdgeInsets.all(margin));
   }
