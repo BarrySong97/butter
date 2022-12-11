@@ -18,7 +18,7 @@ class HeatMapCalendar extends StatefulWidget {
   final List<String> monthsLabels;
 
   /// The inputs that will fill the calendar with data
-  final Map<DateTime, int> input;
+  final List<DateTime> input;
 
   /// The thresholds which will map the given [input] to a color
   ///
@@ -112,7 +112,7 @@ class HeatMapCalendarState extends State<HeatMapCalendar> {
                   currentOpacity: widget.textOpacity,
                   monthLabels: widget.monthsLabels,
                   dayTextColor: widget.dayTextColor,
-                  columnsToCreate: getColumnsToCreate(constraints.maxWidth) - 1,
+                  columnsToCreate: 51,
                   date: DateTime.now(),
                 )
               ],

@@ -26,7 +26,7 @@ class MonthLabel extends StatelessWidget {
             bottom: 0,
             child: Text(
               text,
-              style: TextStyle(fontSize: size - 6, color: textColor),
+              style: TextStyle(fontSize: size - 7, color: textColor),
             ),
           )
         ],

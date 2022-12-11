@@ -19,12 +19,12 @@ class TimeUtils {
 
   static const List<String> defaultWeekLabels = [
     'S',
+    'S',
     'M',
     'T',
     'W',
     'T',
     'F',
-    'S'
   ];
 
   /// Obtains the first day of the current week,
@@ -103,5 +103,48 @@ class TimeUtils {
     } while (finishDate.millisecondsSinceEpoch >= aux.millisecondsSinceEpoch);
 
     return datesList;
+  }
+
+  static List<DateTime> yearDays() {
+    List<int> daysInMonth = <int>[
+      31,
+      -1,
+      31,
+      30,
+      31,
+      30,
+      31,
+      31,
+      30,
+      31,
+      30,
+      31
+    ];
+    final now = DateTime.now();
+    int year = now.year;
+    final bool isLeapYear =
+        (year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0);
+    final int fabruary = isLeapYear ? 29 : 28;
+    daysInMonth[1] = fabruary;
+    final int daysOfYear =
+        daysInMonth.reduce((value, element) => value + element);
+    final List<DateTime> dateList = [];
+    // final List<List<CheckedItem>> listMap =
+    //     daysInMonth.map((e, index) => getDateOfThisMonth(year, e)).toList();
+    final List<List<DateTime>> listMap = daysInMonth.asMap().entries.map((e) {
+      int idx = e.key;
+      int val = e.value;
+      return getDateOfThisMonth(year, idx, val);
+    }).toList();
+    return listMap.expand((element) => element).toList();
+  }
+
+  static List<DateTime> getDateOfThisMonth(int year, int month, days) {
+    final List<DateTime> dateList = [];
+    for (int i = 0; i < days; i++) {
+      final DateTime date = DateTime(year, month + 1, i + 1);
+      dateList.add(date);
+    }
+    return dateList;
   }
 }

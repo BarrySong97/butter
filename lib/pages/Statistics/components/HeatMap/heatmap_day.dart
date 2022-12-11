@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:rotated_corner_decoration/rotated_corner_decoration.dart';
 
 class HeatMapDay extends StatelessWidget {
   final int value;
   final double size;
   final Map<int, Color> thresholds;
+  final bool chcked;
   final Color defaultColor;
   final int currentDay;
   final double opacity;
@@ -14,6 +16,7 @@ class HeatMapDay extends StatelessWidget {
   const HeatMapDay(
       {Key? key,
       required this.value,
+      required this.chcked,
       required this.size,
       required this.thresholds,
       this.defaultColor = Colors.black12,
@@ -30,15 +33,11 @@ class HeatMapDay extends StatelessWidget {
   /// it will receive its value
   Color getColorFromThreshold() {
     Color color = defaultColor;
-    if (value != null) {
-      thresholds.forEach((mapKey, mapColor) {
-        if (value >= mapKey) {
-          color = mapColor;
-        }
-      });
+    if (chcked) {
+      color = Colors.blue;
     }
 
-    return color;
+    return value == 0 ? Colors.transparent : color;
   }
 
   @override
@@ -49,13 +48,20 @@ class HeatMapDay extends StatelessWidget {
       width: size,
       color: getColorFromThreshold(),
       margin: EdgeInsets.all(2.0),
+      foregroundDecoration: value == 1
+          ? const RotatedCornerDecoration(
+              color: Colors.blue,
+              geometry:
+                  const BadgeGeometry(width: 4, height: 4, cornerRadius: 0),
+            )
+          : null,
       child: AnimatedOpacity(
         opacity: opacity,
         duration: animationDuration,
         child: Text(
-          value.toString(),
+          value == 0 ? '' : value.toString(),
           style: TextStyle(
-              fontWeight: fontWeight, color: Colors.white, fontSize: size - 4),
+              fontWeight: fontWeight, color: Colors.white, fontSize: size - 7),
         ),
       ),
     );

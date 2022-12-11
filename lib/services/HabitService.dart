@@ -49,6 +49,14 @@ class HabitService {
     });
   }
 
+  static Future<void> remove(int id) async {
+    final _db = await db;
+    final _repo = await repo;
+    await _db.writeTxn(() async {
+      await _repo.delete(id);
+    });
+  }
+
   static Future<void> check(Habit item, bool checked, DateTime date) async {
     final _db = await db;
     final _repo = await repo;

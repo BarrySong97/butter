@@ -1,5 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-
+import 'package:collection/src/iterable_extensions.dart';
 import 'heatmap_day.dart';
 import 'month_label.dart';
 import 'time_utils.dart';
@@ -9,7 +10,7 @@ class WeekColumns extends StatelessWidget {
 
   final Color labelTextColor;
 
-  final Map<DateTime, int> input;
+  final List<DateTime> input;
 
   final Map<int, Color> colorThresholds;
 
@@ -39,7 +40,7 @@ class WeekColumns extends StatelessWidget {
   /// The main logic for generating a list of columns representing a week
   /// Each column is a week having a [MonthLabel] and 7 [HeatMapDay] widgets
   List<Widget> buildWeekItems() {
-    List<DateTime> dateList = getCalendarDates(columnsToCreate);
+    List<DateTime> dateList = getCalendarDates();
     int totalDays = dateList.length;
     var daysPerWeek = DateTime.daysPerWeek;
     int totalWeeks = (totalDays / daysPerWeek).ceil();
@@ -57,10 +58,14 @@ class WeekColumns extends StatelessWidget {
       // if false, it should be a HeatMapDay
       if (i % 8 == 0) {
         String month = "";
-
-        if (dateList.isNotEmpty && !months.contains(dateList.first.month)) {
-          month = monthLabels[dateList.first.month];
-          months.add(dateList.first.month);
+        final DateTime first = dateList.first;
+        final DateTime sevenDaysAfter = first.add(const Duration(days: 6));
+        if ((dateList.isNotEmpty && !months.contains(sevenDaysAfter.month)) ||
+            i == 0) {
+          final int monthNum =
+              first.year != date.year ? 1 : sevenDaysAfter.month;
+          month = monthLabels[monthNum];
+          months.add(monthNum);
         }
 
         columnItems.add(MonthLabel(
@@ -72,13 +77,15 @@ class WeekColumns extends StatelessWidget {
         DateTime currentDate = dateList.first;
         dateList.removeAt(0);
 
-        final int value =
-            (input[currentDate] == null) ? 0 : input[currentDate] ?? 0;
-
+        final int value = currentDate.day;
+        final bool chcked = input.firstWhereOrNull(
+                (element) => DateUtils.isSameDay(element, currentDate)) !=
+            null;
         HeatMapDay heatMapDay = HeatMapDay(
-          value: value,
+          value: date.year == currentDate.year ? value : 0,
           thresholds: colorThresholds,
           size: squareSize,
+          chcked: chcked,
           currentDay: currentDate.day,
           opacity: currentOpacity,
           textColor: dayTextColor,
@@ -100,11 +107,19 @@ class WeekColumns extends StatelessWidget {
   }
 
   /// Creates a list of all weeks based on given [columnsAmount]
-  List<DateTime> getCalendarDates(int columnsAmount) {
-    DateTime firstDayOfTheWeek = TimeUtils.firstDayOfTheWeek(date);
-    DateTime firstDayOfCalendar =
-        TimeUtils.firstDayOfCalendar(firstDayOfTheWeek, columnsAmount);
-    return TimeUtils.datesBetween(firstDayOfCalendar, date);
+  List<DateTime> getCalendarDates() {
+    List<DateTime> yearDays = TimeUtils.yearDays();
+    final DateTime first = yearDays.first;
+    if (first.weekday != 1) {
+      final int sub = first.weekday - 1;
+      final DateTime firstDayOfWeek = first.subtract(Duration(days: sub));
+      List<DateTime> extra = [];
+      for (int i = 1; i <= sub; i++) {
+        extra.add(first.subtract(Duration(days: i)));
+      }
+      yearDays = [...extra.reversed, ...yearDays];
+    }
+    return yearDays;
   }
 
   @override

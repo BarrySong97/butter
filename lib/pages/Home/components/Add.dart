@@ -12,22 +12,34 @@ import 'package:lipomo/utils/Color.dart';
 import '../../../db.dart';
 import '../index.dart';
 
-void showAddHabitDialog(BuildContext context) {
+void showAddHabitDialog(BuildContext context, bool edit, Habit habit) {
   // List<String> data = AppConfig.languageSupports.keys.toList();
-  showCupertinoModalPopup(context: context, builder: (context) => AddHabit());
+  showCupertinoModalPopup(
+      context: context,
+      builder: (context) => AddHabit(edit: edit, editHabit: habit));
 }
 
 class AddHabit extends ConsumerStatefulWidget {
-  AddHabit({Key? key}) : super(key: key);
+  final bool edit;
+  final Habit editHabit;
+
+  AddHabit({Key? key, required this.edit, required this.editHabit})
+      : super(key: key);
 
   @override
-  ConsumerState<AddHabit> createState() => _AddHabit();
+  ConsumerState<AddHabit> createState() =>
+      _AddHabit(editHabit: editHabit, edit: edit);
 }
 
 class _AddHabit extends ConsumerState<AddHabit> {
-  Habit habit = Habit()
-    ..color = Colors.blue.hex
-    ..dates = [];
+  late TextEditingController _controller;
+  late Habit habit;
+  final Habit editHabit;
+  final bool edit;
+  _AddHabit({required this.editHabit, required this.edit}) {
+    habit = editHabit;
+    _controller = TextEditingController(text: edit ? habit.name : '');
+  }
   @override
   void initState() {
     super.initState();
@@ -100,6 +112,7 @@ class _AddHabit extends ConsumerState<AddHabit> {
   Widget buildNameInput() {
     return TextField(
       cursorColor: Colors.white,
+      controller: _controller,
       style: TextStyle(color: Colors.white),
       onChanged: (value) => {
         setState(() {
@@ -150,9 +163,13 @@ class _AddHabit extends ConsumerState<AddHabit> {
   }
 
   Future<void> addHabit(BuildContext context) async {
-    await HabitService.addHabit(habit);
+    if (edit) {
+      await HabitService.update(habit);
+    } else {
+      await HabitService.addHabit(habit);
+      ref.invalidate(habitProvider);
+    }
     await Future.microtask(
         () => Navigator.of(context).pop('Async thing is done!'));
-    ref.invalidate(habitProvider);
   }
 }

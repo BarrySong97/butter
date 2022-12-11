@@ -5,47 +5,82 @@ import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lipomo/pages/Statistics/components/HeatMap.dart';
 import 'package:lipomo/pages/Statistics/components/InfoCard.dart';
+import 'package:lipomo/services/HabitService.dart';
 
 import '../../models/Habit.dart';
+import '../Home/components/Add.dart';
 import '../Home/index.dart';
 import 'components/HeatMap/week_labels.dart';
 import 'components/LineChart.dart';
 
 class Statistics extends HookConsumerWidget {
   final Color boxColor = Color(0xff292929);
+  Habit habit = Get.arguments;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    AsyncValue<List<Habit?>> habitList = ref.watch(habitProvider);
-    print(Get.parameters['id']);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xff1a1a1a),
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'trs',
+          habit.name ?? '',
           style: const TextStyle(fontWeight: FontWeight.w600, letterSpacing: 4),
         ),
-        actions: buildAction(),
+        actions: buildAction(context),
       ),
       body: Container(
           padding: EdgeInsets.symmetric(horizontal: 16),
           child: ListView(
             children: [
               buildDateInfoCard(),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               buildMonthInfoCard(),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               buildYearInfoCard(),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               buildAllInfoCard(),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               buildLineCard(),
-              const SizedBox(height: 16),
+              const SizedBox(height: 12),
               buildHeatMapCalendarCard(),
+              const SizedBox(height: 4),
+              buildDeleteBtn(context, ref),
               // buildHeatMapCalendarCard()
             ],
           )),
+    );
+  }
+
+  Widget buildDeleteBtn(BuildContext context, WidgetRef ref) {
+    return ElevatedButton(
+      child: Text("Delete".tr),
+      style:
+          ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.red)),
+      onPressed: () => showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          backgroundColor: Color(0xff292929),
+          content: Text(
+            'questionDeleteHabit'.tr,
+            style: const TextStyle(color: Colors.white),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'Cancel'.tr),
+              child: Text('Cancel'.tr),
+            ),
+            TextButton(
+              onPressed: () async {
+                await HabitService.remove(habit.id);
+                Get.offAllNamed("/NextScreen");
+                ref.invalidate(habitProvider);
+              },
+              child: Text('OK'.tr),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -167,7 +202,15 @@ class Statistics extends HookConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           WeekLabels(
-            weekDaysLabels: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+            weekDaysLabels: [
+              'M',
+              'T',
+              'W',
+              'T',
+              'F',
+              'S',
+              'S',
+            ],
             squareSize: 14,
             labelTextColor: Colors.blueGrey,
           ),
@@ -175,7 +218,7 @@ class Statistics extends HookConsumerWidget {
               child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Container(
-              width: 900,
+              width: 960,
               child: HeatMap(),
             ),
           ))
@@ -191,13 +234,12 @@ class Statistics extends HookConsumerWidget {
     );
   }
 
-  List<Widget> buildAction() {
+  List<Widget> buildAction(BuildContext context) {
     return [
       IconButton(
-        icon: const Icon(Icons.edit),
-        tooltip: 'edit habit info',
-        onPressed: () {},
-      ),
+          icon: const Icon(Icons.edit),
+          tooltip: 'edit habit info',
+          onPressed: () => showAddHabitDialog(context, true, habit)),
     ];
   }
 }

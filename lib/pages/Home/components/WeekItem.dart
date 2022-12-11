@@ -50,7 +50,7 @@ class WeekItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onLongPress: () => {showCalendarView(context, item)},
-      onTap: () => {Get.toNamed("/detail/${item.id}")},
+      onTap: () => {Get.toNamed("/detail/${item.id}", arguments: item)},
       child: Container(
         height: 105,
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -117,8 +117,8 @@ class WeekItem extends StatelessWidget {
           onToggle(date, checked);
         },
         child: Container(
-          width: 20,
-          height: 20,
+          width: 36,
+          height: 36,
           alignment: Alignment.center,
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(50), color: checkedColor),

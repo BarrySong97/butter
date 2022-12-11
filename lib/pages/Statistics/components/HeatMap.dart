@@ -9,16 +9,21 @@ class HeatMap extends StatelessWidget {
   Widget build(BuildContext context) {
     // TODO: implement build
     return HeatMapCalendar(
-      input: {
-        TimeUtils.removeTime(DateTime.now().subtract(Duration(days: 2))): 5,
-        TimeUtils.removeTime(DateTime.now().subtract(Duration(days: 1))): 35,
-        TimeUtils.removeTime(DateTime.now().subtract(Duration(days: 0))): 14,
-        TimeUtils.removeTime(DateTime.now()): 4,
-      },
+      input: [
+        TimeUtils.removeTime(DateTime.now()),
+      ],
       colorThresholds: {
         1: Colors.blue,
       },
-      weekDaysLabels: ['S', 'M', 'T', 'W', 'T', 'F', 'S'],
+      weekDaysLabels: [
+        'M',
+        'T',
+        'W',
+        'T',
+        'F',
+        'S',
+        'S',
+      ],
       monthsLabels: [
         "",
         "Jan",

@@ -27,6 +27,7 @@ class Lang extends Translations {
           'thisAll': 'All',
           'allDays': 'All',
           'trackDays': 'Tracked',
+          'questionDeleteHabit': 'comfirm to delete habit',
           'statistic': 'statistic',
         },
         'zh_CN': {
@@ -34,6 +35,10 @@ class Lang extends Translations {
           'trend': '走势',
           "Month": '月',
           "Week": '周',
+          "Delete": "删除",
+          'questionDeleteHabit': '是否删除该习惯',
+          "Cancel": '取消',
+          "OK": '确认',
           'thisYear': '今年',
           'thisAll': '总共',
           'allDays': '总共 / 天',

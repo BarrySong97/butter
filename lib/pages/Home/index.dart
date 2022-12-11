@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flex_color_picker/flex_color_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:isar/isar.dart';
-import 'package:lipomo/components/Timer.dart';
-import 'package:lipomo/db.dart';
 import 'package:lipomo/pages/Home/components/WeekItem.dart';
 import 'package:lipomo/services/HabitService.dart';
 
-import '../../components/ButtonTools.dart';
 import '../../models/Habit.dart';
 import 'components/Add.dart';
 
@@ -120,7 +118,12 @@ class HomePage extends HookConsumerWidget {
           ],
           mainAxisAlignment: MainAxisAlignment.center,
         ),
-        onTap: () => showAddHabitDialog(context));
+        onTap: () => showAddHabitDialog(
+            context,
+            false,
+            Habit()
+              ..color = Colors.blue.hex
+              ..dates = []));
   }
 
   List<Widget> buildAction() {
