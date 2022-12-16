@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_calendar_carousel/classes/event.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
     show CalendarCarousel;
@@ -50,11 +52,23 @@ class _CalendarView extends ConsumerState<CalendarView> {
           daysTextStyle: TextStyle(color: Colors.white),
           weekdayTextStyle: TextStyle(color: Colors.white),
           onDayPressed: (DateTime date, List<Event> events) async {
-            final Iterable<DateTime>? checkItem = habit.dates
-                ?.where((element) => DateUtils.isSameDay(element, date));
-            final bool exsixted = checkItem?.isNotEmpty ?? false;
-            await HabitService.check(habit, exsixted, date);
-            ref.invalidate(habitProvider);
+            if (date.day <= DateTime.now().day) {
+              final Iterable<DateTime>? checkItem = habit.dates
+                  ?.where((element) => DateUtils.isSameDay(element, date));
+              final bool exsixted = checkItem?.isNotEmpty ?? false;
+
+              await HabitService.check(habit, exsixted, date);
+              ref.invalidate(habitProvider);
+            } else {
+              Fluttertoast.showToast(
+                  msg: "checkAfterToday".tr,
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.CENTER,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: const Color(0xff343434),
+                  textColor: Colors.white,
+                  fontSize: 16.0);
+            }
           },
           // weekFormat: true,
           height: 600.0,
@@ -64,7 +78,7 @@ class _CalendarView extends ConsumerState<CalendarView> {
           // showIconBehindDayText: true,
           firstDayOfWeek: 1,
           // selectedDateTime: DateTime.now(),
-          maxSelectedDate: DateTime.now(),
+          // maxSelectedDate: DateTime.now(),
           customDayBuilder: (
             /// you can provide your own build function to make custom day containers
             bool isSelectable,
@@ -84,11 +98,7 @@ class _CalendarView extends ConsumerState<CalendarView> {
             final Iterable<DateTime>? checkItem = habit.dates
                 ?.where((element) => DateUtils.isSameDay(element, day));
             final bool exsixted = checkItem?.isNotEmpty ?? false;
-            if (exsixted) {
-              return buildCheckItem(habit, day, exsixted);
-            } else {
-              return null;
-            }
+            return buildCheckItem(habit, day, exsixted);
           },
           locale: 'zh',
           // prevMonthDayBorderColor: Colors.white,
@@ -107,8 +117,8 @@ class _CalendarView extends ConsumerState<CalendarView> {
     final Color checkedColor = HexColor.getHabitColor(habit, checked);
     return Center(
         child: Container(
-      width: 30,
-      height: 30,
+      width: 50,
+      height: 50,
       alignment: Alignment.center,
       child: Text(
         day.day.toString(),

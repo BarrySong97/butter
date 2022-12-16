@@ -44,9 +44,11 @@ class HeatMapCalendar extends StatefulWidget {
   /// Helps avoiding overspacing issues
   final double safetyMargin;
 
+  final int year;
   const HeatMapCalendar(
       {Key? key,
       required this.input,
+      required this.year,
       required this.colorThresholds,
       this.weekDaysLabels = TimeUtils.defaultWeekLabels,
       this.monthsLabels = TimeUtils.defaultMonthsLabels,
@@ -107,6 +109,7 @@ class HeatMapCalendarState extends State<HeatMapCalendar> {
                 WeekColumns(
                   squareSize: widget.squareSize,
                   labelTextColor: widget.labelTextColor,
+                  year: widget.year,
                   input: widget.input,
                   colorThresholds: widget.colorThresholds,
                   currentOpacity: widget.textOpacity,

@@ -13,11 +13,40 @@ import '../Home/index.dart';
 import 'components/HeatMap/week_labels.dart';
 import 'components/LineChart.dart';
 
+final int thisYear = DateTime.now().year;
+List<int> threeYears = [
+  thisYear,
+  thisYear - 1,
+  thisYear - 2,
+];
+final yearProvider = StateProvider.autoDispose<int>((ref) {
+  return thisYear;
+});
+
 class Statistics extends HookConsumerWidget {
   final Color boxColor = Color(0xff292929);
+  final ScrollController controller =
+      ScrollController(initialScrollOffset: 100);
   Habit habit = Get.arguments;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final int year = ref.watch(yearProvider);
+    final List<DateTime> dates = getDateByYear(habit, year);
+    final String firtTractDate = dates.first.toString();
+    // month
+    final int thisMonthNum = 0;
+    final int monthAll = 0;
+    final double monthPercent = thisMonthNum / monthAll;
+    // year
+    final int thisYearNum = 0;
+    final int yearAll = 0;
+    final double yearPercent = thisYearNum / yearAll;
+
+    // all
+    final int allNum = 0;
+    final int allDays = 0;
+    final double allPercent = allNum / allDays;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xff1a1a1a),
@@ -27,7 +56,7 @@ class Statistics extends HookConsumerWidget {
           habit.name ?? '',
           style: const TextStyle(fontWeight: FontWeight.w600, letterSpacing: 4),
         ),
-        actions: buildAction(context),
+        actions: buildAction(context, year, ref),
       ),
       body: Container(
           padding: EdgeInsets.symmetric(horizontal: 16),
@@ -43,7 +72,7 @@ class Statistics extends HookConsumerWidget {
               const SizedBox(height: 12),
               buildLineCard(),
               const SizedBox(height: 12),
-              buildHeatMapCalendarCard(),
+              buildHeatMapCalendarCard(year),
               const SizedBox(height: 4),
               buildDeleteBtn(context, ref),
               // buildHeatMapCalendarCard()
@@ -195,33 +224,59 @@ class Statistics extends HookConsumerWidget {
     );
   }
 
-  Widget buildHeatMapCalendarCard() {
+  Widget buildHeatMapCalendarCard(int year) {
     return InfoCard(
       title: '日历图',
-      content: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      extra: Row(
         children: [
-          WeekLabels(
-            weekDaysLabels: [
-              'M',
-              'T',
-              'W',
-              'T',
-              'F',
-              'S',
-              'S',
+          Text(
+            year.toString(),
+            style: TextStyle(color: Colors.white, fontSize: 12),
+          )
+        ],
+      ),
+      content: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              WeekLabels(
+                weekDaysLabels: [
+                  'M',
+                  'T',
+                  'W',
+                  'T',
+                  'F',
+                  'S',
+                  'S',
+                ],
+                squareSize: 14,
+                labelTextColor: Colors.blueGrey,
+              ),
+              Expanded(
+                  child: SingleChildScrollView(
+                controller: controller,
+                scrollDirection: Axis.horizontal,
+                child: Container(
+                  width: 960,
+                  height: 150,
+                  child: HeatMap(year: year),
+                ),
+              ))
             ],
-            squareSize: 14,
-            labelTextColor: Colors.blueGrey,
           ),
-          Expanded(
-              child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Container(
-              width: 960,
-              child: HeatMap(),
-            ),
-          ))
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                'dragToSeeMore'.tr,
+                style: const TextStyle(color: Colors.white, fontSize: 12),
+              ),
+              SizedBox(
+                width: 8,
+              ),
+            ],
+          )
         ],
       ),
     );
@@ -234,7 +289,7 @@ class Statistics extends HookConsumerWidget {
     );
   }
 
-  List<Widget> buildAction(BuildContext context) {
+  List<Widget> buildAction(BuildContext context, int year, WidgetRef ref) {
     return [
       IconButton(
           icon: const Icon(Icons.edit),
@@ -242,4 +297,12 @@ class Statistics extends HookConsumerWidget {
           onPressed: () => showAddHabitDialog(context, true, habit)),
     ];
   }
+}
+
+List<DateTime> getDateByYear(Habit habit, int year) {
+  final List<DateTime> dateList = habit.dates != null
+      ? habit.dates!.where((element) => element.year == year).toList()
+      : [];
+  dateList.sort(((a, b) => a.isBefore(b) ? -1 : 1));
+  return dateList;
 }

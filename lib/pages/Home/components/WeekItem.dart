@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:lipomo/models/Habit.dart';
 import 'package:lipomo/pages/Home/components/Calendar.dart';
@@ -114,7 +115,18 @@ class WeekItem extends StatelessWidget {
       ),
       GestureDetector(
         onTap: () {
-          onToggle(date, checked);
+          if (date.day <= DateTime.now().day) {
+            onToggle(date, checked);
+          } else {
+            Fluttertoast.showToast(
+                msg: "checkAfterToday".tr,
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIosWeb: 1,
+                backgroundColor: checkedColor,
+                textColor: Colors.white,
+                fontSize: 16.0);
+          }
         },
         child: Container(
           width: 36,

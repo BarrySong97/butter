@@ -23,10 +23,12 @@ class WeekColumns extends StatelessWidget {
   final int columnsToCreate;
 
   final DateTime date;
+  final int year;
 
   const WeekColumns(
       {Key? key,
       required this.squareSize,
+      required this.year,
       required this.labelTextColor,
       required this.input,
       required this.colorThresholds,
@@ -40,7 +42,7 @@ class WeekColumns extends StatelessWidget {
   /// The main logic for generating a list of columns representing a week
   /// Each column is a week having a [MonthLabel] and 7 [HeatMapDay] widgets
   List<Widget> buildWeekItems() {
-    List<DateTime> dateList = getCalendarDates();
+    List<DateTime> dateList = getCalendarDates(year);
     int totalDays = dateList.length;
     var daysPerWeek = DateTime.daysPerWeek;
     int totalWeeks = (totalDays / daysPerWeek).ceil();
@@ -62,8 +64,7 @@ class WeekColumns extends StatelessWidget {
         final DateTime sevenDaysAfter = first.add(const Duration(days: 6));
         if ((dateList.isNotEmpty && !months.contains(sevenDaysAfter.month)) ||
             i == 0) {
-          final int monthNum =
-              first.year != date.year ? 1 : sevenDaysAfter.month;
+          final int monthNum = first.year != year ? 1 : sevenDaysAfter.month;
           month = monthLabels[monthNum];
           months.add(monthNum);
         }
@@ -82,7 +83,7 @@ class WeekColumns extends StatelessWidget {
                 (element) => DateUtils.isSameDay(element, currentDate)) !=
             null;
         HeatMapDay heatMapDay = HeatMapDay(
-          value: date.year == currentDate.year ? value : 0,
+          value: year == currentDate.year ? value : 0,
           thresholds: colorThresholds,
           size: squareSize,
           chcked: chcked,
@@ -107,8 +108,8 @@ class WeekColumns extends StatelessWidget {
   }
 
   /// Creates a list of all weeks based on given [columnsAmount]
-  List<DateTime> getCalendarDates() {
-    List<DateTime> yearDays = TimeUtils.yearDays();
+  List<DateTime> getCalendarDates(int year) {
+    List<DateTime> yearDays = TimeUtils.yearDays(year);
     final DateTime first = yearDays.first;
     if (first.weekday != 1) {
       final int sub = first.weekday - 1;

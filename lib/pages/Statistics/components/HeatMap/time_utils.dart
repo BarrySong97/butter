@@ -105,7 +105,7 @@ class TimeUtils {
     return datesList;
   }
 
-  static List<DateTime> yearDays() {
+  static List<DateTime> yearDays(int year) {
     List<int> daysInMonth = <int>[
       31,
       -1,
@@ -120,8 +120,6 @@ class TimeUtils {
       30,
       31
     ];
-    final now = DateTime.now();
-    int year = now.year;
     final bool isLeapYear =
         (year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0);
     final int fabruary = isLeapYear ? 29 : 28;

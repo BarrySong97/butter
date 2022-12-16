@@ -4,11 +4,12 @@ import 'HeatMap/heatmap_calendar.dart';
 import 'HeatMap/time_utils.dart';
 
 class HeatMap extends StatelessWidget {
-  const HeatMap();
+  final int year;
+  const HeatMap({required this.year});
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return HeatMapCalendar(
+      year: year,
       input: [
         TimeUtils.removeTime(DateTime.now()),
       ],
