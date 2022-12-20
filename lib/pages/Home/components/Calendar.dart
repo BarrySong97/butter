@@ -25,6 +25,8 @@ class CalendarView extends ConsumerStatefulWidget {
   ConsumerState<CalendarView> createState() => _CalendarView(habit: habit);
 }
 
+final DateTime today = DateTime.now();
+
 class _CalendarView extends ConsumerState<CalendarView> {
   final Habit habit;
 
@@ -114,7 +116,9 @@ class _CalendarView extends ConsumerState<CalendarView> {
     DateTime day,
     bool checked,
   ) {
-    final Color checkedColor = HexColor.getHabitColor(habit, checked);
+    final Color checkedColor = day.isBefore(today)
+        ? HexColor.getHabitColor(habit, checked)
+        : Colors.transparent;
     return Center(
         child: Container(
       width: 50,

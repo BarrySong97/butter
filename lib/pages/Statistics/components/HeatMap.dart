@@ -5,14 +5,13 @@ import 'HeatMap/time_utils.dart';
 
 class HeatMap extends StatelessWidget {
   final int year;
-  const HeatMap({required this.year});
+  final List<DateTime> dates;
+  const HeatMap({required this.year, required this.dates});
   @override
   Widget build(BuildContext context) {
     return HeatMapCalendar(
       year: year,
-      input: [
-        TimeUtils.removeTime(DateTime.now()),
-      ],
+      input: dates,
       colorThresholds: {
         1: Colors.blue,
       },

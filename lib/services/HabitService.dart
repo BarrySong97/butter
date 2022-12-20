@@ -23,6 +23,7 @@ class HabitService {
   static Future<void> addHabit(Habit item) async {
     final _db = await db;
     final _repo = await repo;
+    item.createdDate = DateTime.now();
 
     await _db.writeTxn(() async {
       await _repo.put(item);

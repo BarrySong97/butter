@@ -1,9 +1,12 @@
 import 'package:custom_sliding_segmented_control/custom_sliding_segmented_control.dart';
+import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:lipomo/pages/Home/components/Calendar.dart';
 import 'package:lipomo/pages/Statistics/components/HeatMap.dart';
+import 'package:lipomo/pages/Statistics/components/HeatMap/time_utils.dart';
 import 'package:lipomo/pages/Statistics/components/InfoCard.dart';
 import 'package:lipomo/services/HabitService.dart';
 
@@ -22,29 +25,52 @@ List<int> threeYears = [
 final yearProvider = StateProvider.autoDispose<int>((ref) {
   return thisYear;
 });
+final lineProvider = StateProvider.autoDispose<int>((ref) {
+  return 1;
+});
 
 class Statistics extends HookConsumerWidget {
-  final Color boxColor = Color(0xff292929);
-  final ScrollController controller =
-      ScrollController(initialScrollOffset: 100);
+  final Color boxColor = const Color(0xff292929);
+  late ScrollController controller;
+  // ScrollController(initialScrollOffset: 100);
   Habit habit = Get.arguments;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final int year = ref.watch(yearProvider);
+    final int lineMode = ref.watch(lineProvider);
+
     final List<DateTime> dates = getDateByYear(habit, year);
-    final String firtTractDate = dates.first.toString();
+    final List<int> yearLineData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    final List<int> weekLineData = [0, 0, 0, 0];
+    dates.forEach((element) {
+      yearLineData[element.month - 1]++;
+    });
+    dates.forEach((element) {
+      if (element.month == today.month) {
+        double week = element.day / 7;
+        // print(element.day / 7);
+        weekLineData[week.toInt()]++;
+      }
+    });
+    DateFormat formatter = DateFormat('yyyy-MM-dd');
+    final String firtTrackedDate = formatter.format(dates.first);
+    final String createdDate = formatter.format(habit.createdDate ?? today);
+    controller =
+        ScrollController(initialScrollOffset: (80 * today.month).toDouble());
     // month
-    final int thisMonthNum = 0;
-    final int monthAll = 0;
+    final int thisMonthNum =
+        dates.where((element) => element.month == today.month).length;
+    final int monthAll = TimeUtils.getMonthDays(today);
     final double monthPercent = thisMonthNum / monthAll;
     // year
-    final int thisYearNum = 0;
-    final int yearAll = 0;
+    final int thisYearNum = dates.length;
+    final int yearAll = TimeUtils.getYearDays(today);
     final double yearPercent = thisYearNum / yearAll;
 
     // all
-    final int allNum = 0;
-    final int allDays = 0;
+    final int allNum = habit.dates?.length ?? 0;
+    final int allDays =
+        today.difference(dates.isEmpty ? today : dates.first).inDays + 1;
     final double allPercent = allNum / allDays;
 
     return Scaffold(
@@ -59,20 +85,21 @@ class Statistics extends HookConsumerWidget {
         actions: buildAction(context, year, ref),
       ),
       body: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           child: ListView(
             children: [
-              buildDateInfoCard(),
+              buildDateInfoCard(firtTrackedDate, createdDate),
               const SizedBox(height: 12),
-              buildMonthInfoCard(),
+              buildMonthInfoCard(thisMonthNum, monthAll, monthPercent),
               const SizedBox(height: 12),
-              buildYearInfoCard(),
+              buildYearInfoCard(thisYearNum, yearAll, yearPercent),
               const SizedBox(height: 12),
-              buildAllInfoCard(),
+              buildAllInfoCard(allNum, allDays, allPercent),
               const SizedBox(height: 12),
-              buildLineCard(),
+              buildLineCard(
+                  ref, lineMode == 1 ? yearLineData : weekLineData, lineMode),
               const SizedBox(height: 12),
-              buildHeatMapCalendarCard(year),
+              buildHeatMapCalendarCard(year, dates),
               const SizedBox(height: 4),
               buildDeleteBtn(context, ref),
               // buildHeatMapCalendarCard()
@@ -83,13 +110,12 @@ class Statistics extends HookConsumerWidget {
 
   Widget buildDeleteBtn(BuildContext context, WidgetRef ref) {
     return ElevatedButton(
-      child: Text("Delete".tr),
       style:
           ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.red)),
       onPressed: () => showDialog<String>(
         context: context,
         builder: (BuildContext context) => AlertDialog(
-          backgroundColor: Color(0xff292929),
+          backgroundColor: const Color(0xff292929),
           content: Text(
             'questionDeleteHabit'.tr,
             style: const TextStyle(color: Colors.white),
@@ -110,36 +136,45 @@ class Statistics extends HookConsumerWidget {
           ],
         ),
       ),
+      child: Text("Delete".tr),
     );
   }
 
-  Widget buildDateInfoCard() {
+  Widget buildDateInfoCard(String trackedDate, String createdDate) {
     return Row(
       children: [
         Expanded(
           child:
-              InfoCard(content: buildInfoItem('2022-10-17', 'createStartFrom')),
+              InfoCard(content: buildInfoItem(createdDate, 'createStartFrom')),
         ),
-        SizedBox(
+        const SizedBox(
           width: 16,
         ),
         Expanded(
-            child: InfoCard(
-                content: buildInfoItem('2022-10-17', 'trackStartFrom')))
+            child:
+                InfoCard(content: buildInfoItem(trackedDate, 'trackStartFrom')))
       ],
     );
   }
 
-  Widget buildMonthInfoCard() {
-    return InfoCard(title: 'thisMonth'.tr, content: buildNumberInfo());
+  Widget buildMonthInfoCard(
+      int thisMonthNum, int monthAll, double monthPercent) {
+    return InfoCard(
+        title: 'thisMonth'.tr,
+        content: buildNumberInfo(thisMonthNum, monthAll, monthPercent));
   }
 
-  Widget buildYearInfoCard() {
-    return InfoCard(title: 'thisYear'.tr, content: buildNumberInfo());
+  Widget buildYearInfoCard(
+      int thisMonthNum, int monthAll, double monthPercent) {
+    return InfoCard(
+        title: 'thisYear'.tr,
+        content: buildNumberInfo(thisMonthNum, monthAll, monthPercent));
   }
 
-  Widget buildAllInfoCard() {
-    return InfoCard(title: 'thisAll'.tr, content: buildNumberInfo());
+  Widget buildAllInfoCard(int thisMonthNum, int monthAll, double monthPercent) {
+    return InfoCard(
+        title: 'thisAll'.tr,
+        content: buildNumberInfo(thisMonthNum, monthAll, monthPercent));
   }
 
   Widget buildInfoItem(String value, String title) {
@@ -154,46 +189,44 @@ class Statistics extends HookConsumerWidget {
           ),
           Text(
             title.tr,
-            style: TextStyle(color: Color(0xff898989), fontSize: 11),
+            style: const TextStyle(color: Color(0xff898989), fontSize: 11),
           )
         ],
       ),
     ));
   }
 
-  Widget buildNumberInfo() {
+  Widget buildNumberInfo(int thisMonthNum, int monthAll, double monthPercent) {
     return Row(
       children: [
-        Expanded(child: buildInfoItem('24', 'trackDays')),
-        SizedBox(
+        Expanded(child: buildInfoItem(thisMonthNum.toString(), 'trackDays')),
+        const SizedBox(
             width: 1, height: 24, child: ColoredBox(color: Color(0xff3a3a3a))),
-        Expanded(child: buildInfoItem('120', 'allDays')),
-        SizedBox(
+        Expanded(child: buildInfoItem(monthAll.toString(), 'allDays')),
+        const SizedBox(
             width: 1, height: 24, child: ColoredBox(color: Color(0xff3a3a3a))),
-        Expanded(child: buildInfoItem('20%', 'percent'))
+        Expanded(
+            child: buildInfoItem(
+                '${(monthPercent * 100).toStringAsFixed(1)}%', 'percent'))
       ],
     );
   }
 
-  Widget buildLineCard() {
+  Widget buildLineCard(WidgetRef ref, List<int> data, int lineMode) {
     return InfoCard(
-      content: LineChartSample2(),
+      content: LineChartSample2(data: data),
       title: 'trend'.tr,
       extra: CustomSlidingSegmentedControl<int>(
-        initialValue: 3,
+        initialValue: 1,
         height: 16,
         children: {
           1: Text(
-            'Week'.tr,
-            style: TextStyle(fontSize: 10),
-          ),
-          3: Text(
             'Year'.tr,
-            style: TextStyle(fontSize: 10),
+            style: const TextStyle(fontSize: 10),
           ),
           2: Text(
             'Month'.tr,
-            style: TextStyle(fontSize: 10),
+            style: const TextStyle(fontSize: 10),
           ),
         },
         decoration: BoxDecoration(
@@ -208,30 +241,30 @@ class Statistics extends HookConsumerWidget {
               color: Colors.black.withOpacity(.3),
               blurRadius: 4.0,
               spreadRadius: 1.0,
-              offset: Offset(
+              offset: const Offset(
                 0.0,
                 2.0,
               ),
             ),
           ],
         ),
-        duration: Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 300),
         curve: Curves.easeInToLinear,
         onValueChanged: (v) {
-          print(v);
+          ref.read(lineProvider.notifier).state = v;
         },
       ),
     );
   }
 
-  Widget buildHeatMapCalendarCard(int year) {
+  Widget buildHeatMapCalendarCard(int year, List<DateTime> dates) {
     return InfoCard(
       title: '日历图',
       extra: Row(
         children: [
           Text(
             year.toString(),
-            style: TextStyle(color: Colors.white, fontSize: 12),
+            style: const TextStyle(color: Colors.white, fontSize: 12),
           )
         ],
       ),
@@ -241,7 +274,7 @@ class Statistics extends HookConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               WeekLabels(
-                weekDaysLabels: [
+                weekDaysLabels: const [
                   'M',
                   'T',
                   'W',
@@ -257,10 +290,10 @@ class Statistics extends HookConsumerWidget {
                   child: SingleChildScrollView(
                 controller: controller,
                 scrollDirection: Axis.horizontal,
-                child: Container(
+                child: SizedBox(
                   width: 960,
                   height: 150,
-                  child: HeatMap(year: year),
+                  child: HeatMap(year: year, dates: dates),
                 ),
               ))
             ],
@@ -272,20 +305,13 @@ class Statistics extends HookConsumerWidget {
                 'dragToSeeMore'.tr,
                 style: const TextStyle(color: Colors.white, fontSize: 12),
               ),
-              SizedBox(
+              const SizedBox(
                 width: 8,
               ),
             ],
           )
         ],
       ),
-    );
-  }
-
-  Widget buildAllDays() {
-    return ColoredBox(
-      color: boxColor,
-      child: Text('1'),
     );
   }
 

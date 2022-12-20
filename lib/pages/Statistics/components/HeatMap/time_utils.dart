@@ -1,3 +1,5 @@
+import 'dart:core';
+
 class TimeUtils {
   /// The first element is an empty string,
   /// once Dart's DateTime counts months from 1 to 12
@@ -94,7 +96,6 @@ class TimeUtils {
   /// Creates a list of [DateTime], including all days between [startDate] and [finishDate]
   static List<DateTime> datesBetween(DateTime startDate, DateTime finishDate) {
     assert(startDate.isBefore(finishDate));
-
     List<DateTime> datesList = [];
     DateTime aux = startDate;
     do {
@@ -103,6 +104,19 @@ class TimeUtils {
     } while (finishDate.millisecondsSinceEpoch >= aux.millisecondsSinceEpoch);
 
     return datesList;
+  }
+
+  static int getMonthDays(DateTime date) {
+    int daysInMonth = DateTime(date.year, date.month + 1, 0).day;
+    return daysInMonth;
+  }
+
+  static int getYearDays(DateTime date) {
+    final int year = date.year;
+    final int daysInYear = 365;
+    final bool isLeapYear =
+        (year % 4 == 0) && (year % 100 != 0) || (year % 400 == 0);
+    return daysInYear;
   }
 
   static List<DateTime> yearDays(int year) {

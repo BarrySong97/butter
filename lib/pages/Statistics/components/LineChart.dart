@@ -2,7 +2,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class LineChartSample2 extends StatefulWidget {
-  const LineChartSample2({super.key});
+  final List<int> data;
+  const LineChartSample2({super.key, required this.data});
 
   @override
   State<LineChartSample2> createState() => _LineChartSample2State();
@@ -26,26 +27,38 @@ class _LineChartSample2State extends State<LineChartSample2> {
     );
   }
 
+  final monthLabel = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  final weekLabel = [
+    "W1",
+    "W2",
+    "W3",
+    "W4",
+  ];
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       color: Color(0xff68737d),
       fontWeight: FontWeight.bold,
-      fontSize: 12,
+      fontSize: 10,
     );
-    Widget text;
-    switch (value.toInt()) {
-      case 2:
-        text = const Text('M', style: style);
-        break;
-      case 5:
-        text = const Text('J', style: style);
-        break;
-      case 8:
-        text = const Text('S', style: style);
-        break;
-      default:
-        text = const Text('S', style: style);
-        break;
+    Widget text = Text('', style: style);
+    if (value.toInt() < widget.data.length && value.toInt() % 2 == 0) {
+      text = Text(monthLabel[value.toInt()], style: style);
+    }
+    if (value.toInt() < widget.data.length && widget.data.length == 4) {
+      text = Text(weekLabel[value.toInt()], style: style);
     }
 
     return SideTitleWidget(
@@ -62,27 +75,57 @@ class _LineChartSample2State extends State<LineChartSample2> {
     );
     String text;
     switch (value.toInt()) {
-      case 1:
-        text = '10K';
+      case 0:
+        text = '0';
         break;
-      case 3:
-        text = '30k';
+      // case 7:
+      //   text = '7';
+      //   break;
+      case 14:
+        text = '14';
         break;
-      case 5:
-        text = '50k';
+      // case 21:
+      //   text = '21';
+      //   break;
+      case 31:
+        text = '31';
         break;
       default:
         // text = '50k';
         text = '';
+    }
+    if (widget.data.length == 4) {
+      switch (value.toInt()) {
+        case 0:
+          text = '0';
+          break;
+        case 7:
+          text = '7';
+          break;
+        case 3:
+          text = '3';
+          break;
+      }
     }
 
     return Text(text, style: style, textAlign: TextAlign.left);
   }
 
   LineChartData mainData() {
+    final int maxY = widget.data.length == 4 ? 8 : 32;
+    final int maxX = widget.data.length - 1;
+    final int minX = 0;
+    final int minY = 0;
+    final List<FlSpot> spots = widget.data
+        .asMap()
+        .keys
+        .map((e) => FlSpot(e.toDouble(), widget.data[e].toDouble()))
+        .toList();
     return LineChartData(
       gridData: FlGridData(
-          show: true, horizontalInterval: 1, drawVerticalLine: false),
+          show: true,
+          horizontalInterval: widget.data.length == 4 ? 1 : 7,
+          drawVerticalLine: false),
       titlesData: FlTitlesData(
         show: true,
         rightTitles: AxisTitles(
@@ -112,23 +155,14 @@ class _LineChartSample2State extends State<LineChartSample2> {
         show: true,
         border: Border.all(color: Colors.transparent),
       ),
-      minX: 0,
-      maxX: 11,
-      minY: 0,
-      maxY: 6,
+      minX: minX.toDouble(),
+      maxX: maxX.toDouble(),
+      minY: minY.toDouble(),
+      maxY: maxY.toDouble(),
       lineBarsData: [
         LineChartBarData(
-          spots: const [
-            FlSpot(0, 3),
-            FlSpot(2.6, 2),
-            FlSpot(4.9, 5),
-            FlSpot(6.8, 3.1),
-            FlSpot(8, 4),
-            FlSpot(9.5, 3),
-            FlSpot(11, 4),
-          ],
+          spots: spots,
           isCurved: true,
-
           gradient: LinearGradient(
             colors: gradientColors,
           ),

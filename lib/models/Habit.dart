@@ -11,4 +11,6 @@ class Habit {
   String? color;
 
   List<DateTime>? dates;
+
+  DateTime? createdDate;
 }
