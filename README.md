@@ -1,18 +1,15 @@
 # butter
 
-A new Flutter project.
+A Simple beautiful Habit Tracker App
 
-## Getting Started
+## App (lang support en/zh)
 
-This project is a starting point for a Flutter application.
+![](https://files.catbox.moe/oi4ipg.jpg)
 
-A few resources to get you started if this is your first Flutter project:
+![](https://files.catbox.moe/uqahvs.jpg)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+![](https://files.catbox.moe/aqbec0.jpg)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+![](https://files.catbox.moe/y5w06n.jpg)
 
-# lilpomo
+![](https://files.catbox.moe/uln9vm.jpg)
