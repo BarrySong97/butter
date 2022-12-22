@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:lipomo/models/Habit.dart';
-import 'package:lipomo/pages/Home/components/Calendar.dart';
-import 'package:lipomo/pages/Home/index.dart';
+import 'package:butter/models/Habit.dart';
+import 'package:butter/pages/Home/components/Calendar.dart';
+import 'package:butter/pages/Home/index.dart';
 
 import '../../../utils/Color.dart';
 

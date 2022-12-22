@@ -1,4 +1,4 @@
-package com.example.lipomo
+package com.example.butter
 
 import io.flutter.embedding.android.FlutterActivity
 

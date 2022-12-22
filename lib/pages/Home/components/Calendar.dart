@@ -6,8 +6,8 @@ import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_calendar_carousel/flutter_calendar_carousel.dart'
     show CalendarCarousel;
-import 'package:lipomo/services/HabitService.dart';
-import 'package:lipomo/utils/Color.dart';
+import 'package:butter/services/HabitService.dart';
+import 'package:butter/utils/Color.dart';
 import '../../../models/Habit.dart';
 import '../index.dart';
 
@@ -42,6 +42,7 @@ class _CalendarView extends ConsumerState<CalendarView> {
   Widget build(
     BuildContext context,
   ) {
+    Locale? l = Get.locale;
     return Material(
       child: Container(
         height: 400,
@@ -102,7 +103,7 @@ class _CalendarView extends ConsumerState<CalendarView> {
             final bool exsixted = checkItem?.isNotEmpty ?? false;
             return buildCheckItem(habit, day, exsixted);
           },
-          locale: 'zh',
+          locale: l?.languageCode ?? 'zh',
           // prevMonthDayBorderColor: Colors.white,
           // weekFormat: false,
           todayButtonColor: Colors.transparent,

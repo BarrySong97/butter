@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
-import 'package:lipomo/db.dart';
-import 'package:lipomo/models/Habit.dart';
+import 'package:butter/db.dart';
+import 'package:butter/models/Habit.dart';
 
 class HabitService {
   static final HabitService _dbManager = new HabitService._internal();
@@ -66,6 +66,7 @@ class HabitService {
     } else {
       item.dates?.add(date);
     }
+    item.dates?.sort();
     await _db.writeTxn(() async {
       await _repo.put(item);
     });

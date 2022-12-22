@@ -22,16 +22,20 @@ class LanguageSelectDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
+      color: Color(0xff292929),
       child: SizedBox(
         height: 350,
         width: MediaQuery.of(context).size.width,
         child: Column(
           children: [
-            const Padding(
+            Padding(
               padding: EdgeInsets.all(8.0),
               child: Text(
-                "选择语言",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                "chooseLang".tr,
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: Colors.white),
               ),
             ),
             Expanded(
@@ -53,7 +57,10 @@ class LanguageSelectDialog extends StatelessWidget {
     bool checked = data[index] == l.toString();
     Color color = Theme.of(context).primaryColor;
     return ListTile(
-      title: Text(data[index].tr),
+      title: Text(
+        data[index].tr,
+        style: TextStyle(color: Colors.white),
+      ),
       onTap: () => _onSelect(index),
       trailing: checked ? Icon(Icons.check, size: 20, color: color) : null,
     );

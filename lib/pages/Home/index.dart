@@ -3,8 +3,8 @@ import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:lipomo/pages/Home/components/WeekItem.dart';
-import 'package:lipomo/services/HabitService.dart';
+import 'package:butter/pages/Home/components/WeekItem.dart';
+import 'package:butter/services/HabitService.dart';
 
 import '../../models/Habit.dart';
 import 'components/Add.dart';

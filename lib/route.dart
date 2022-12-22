@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:lipomo/pages/Home/index.dart';
-import 'package:lipomo/pages/Statistics/index.dart';
+import 'package:butter/pages/Home/index.dart';
+import 'package:butter/pages/Statistics/index.dart';
 
 import 'pages/Settings/index.dart';
 

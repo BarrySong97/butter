@@ -4,11 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:lipomo/pages/Home/components/Calendar.dart';
-import 'package:lipomo/pages/Statistics/components/HeatMap.dart';
-import 'package:lipomo/pages/Statistics/components/HeatMap/time_utils.dart';
-import 'package:lipomo/pages/Statistics/components/InfoCard.dart';
-import 'package:lipomo/services/HabitService.dart';
+import 'package:butter/pages/Home/components/Calendar.dart';
+import 'package:butter/pages/Statistics/components/HeatMap.dart';
+import 'package:butter/pages/Statistics/components/HeatMap/time_utils.dart';
+import 'package:butter/pages/Statistics/components/InfoCard.dart';
+import 'package:butter/services/HabitService.dart';
 
 import '../../models/Habit.dart';
 import '../Home/components/Add.dart';
@@ -53,7 +53,8 @@ class Statistics extends HookConsumerWidget {
       }
     });
     DateFormat formatter = DateFormat('yyyy-MM-dd');
-    final String firtTrackedDate = formatter.format(dates.first);
+    final String firtTrackedDate =
+        formatter.format(dates.isNotEmpty ? dates.first : today);
     final String createdDate = formatter.format(habit.createdDate ?? today);
     controller =
         ScrollController(initialScrollOffset: (80 * today.month).toDouble());
@@ -69,9 +70,15 @@ class Statistics extends HookConsumerWidget {
 
     // all
     final int allNum = habit.dates?.length ?? 0;
-    final int allDays =
-        today.difference(dates.isEmpty ? today : dates.first).inDays + 1;
-    final double allPercent = allNum / allDays;
+    final DateTime diff = habit.dates != null && habit.dates!.isEmpty
+        ? today
+        : habit.dates!.first;
+    final int allDays = TimeUtils.removeTime(diff)
+            .difference(TimeUtils.removeTime(today))
+            .inDays
+            .abs() +
+        1;
+    final double allPercent = allNum / (allDays);
 
     return Scaffold(
       appBar: AppBar(
@@ -99,10 +106,11 @@ class Statistics extends HookConsumerWidget {
               buildLineCard(
                   ref, lineMode == 1 ? yearLineData : weekLineData, lineMode),
               const SizedBox(height: 12),
-              buildHeatMapCalendarCard(year, dates),
-              const SizedBox(height: 4),
+              buildHeatMapCalendarCard(year, dates, ref),
+              const SizedBox(height: 8),
               buildDeleteBtn(context, ref),
               // buildHeatMapCalendarCard()
+              const SizedBox(height: 8),
             ],
           )),
     );
@@ -257,15 +265,37 @@ class Statistics extends HookConsumerWidget {
     );
   }
 
-  Widget buildHeatMapCalendarCard(int year, List<DateTime> dates) {
+  Widget buildHeatMapCalendarCard(
+      int year, List<DateTime> dates, WidgetRef ref) {
     return InfoCard(
       title: '日历图',
       extra: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          GestureDetector(
+            child: Icon(
+              Icons.chevron_left_outlined,
+              size: 20,
+              color: Colors.white,
+            ),
+            onTap: () => {ref.read(yearProvider.notifier).state = year - 1},
+          ),
           Text(
             year.toString(),
             style: const TextStyle(color: Colors.white, fontSize: 12),
-          )
+          ),
+          GestureDetector(
+            child: Icon(
+              Icons.chevron_right_outlined,
+              size: 20,
+              color: year < today.year ? Colors.white : Color(0xff5f5f5f),
+            ),
+            onTap: () {
+              if (year < today.year) {
+                ref.read(yearProvider.notifier).state = year + 1;
+              }
+            },
+          ),
         ],
       ),
       content: Column(

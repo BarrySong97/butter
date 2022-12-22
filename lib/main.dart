@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'package:lipomo/route.dart';
+import 'package:butter/route.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'locale.dart';
 import 'pages/Home/index.dart';

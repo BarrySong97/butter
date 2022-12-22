@@ -1,4 +1,4 @@
-name: lipomo
+name: butter
 description: A new Flutter project.
 
 # The following line prevents the package from being accidentally published to
@@ -61,7 +61,20 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   isar_generator: *isar_version
   build_runner: any
+  flutter_launcher_icons: ^0.11.0
 
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/launcher.png"
+  min_sdk_android: 21
+  adaptive_icon_background: "#ffffff"
+  web:
+    generate: false
+  windows:
+    generate: false
+  macos:
+    generate: false
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
@@ -76,8 +89,6 @@ flutter:
   # assets:
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
-  assets:
-    - assets/images/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
 

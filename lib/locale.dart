@@ -9,7 +9,7 @@ class Lang extends Translations {
           'applyLang': 'Language',
           'applyLangSub': 'switch to your language',
           'settingsTitle': 'Settings',
-          'habbitsTitle': 'Habbits',
+          'habbitsTitle': 'Habits',
           'addHabit': 'New Habit',
           'addNewHabbit': 'New Habit',
           'cancel': 'Cancel',
@@ -32,10 +32,12 @@ class Lang extends Translations {
           'dragToSeeMore': 'drag to see more',
           'chooseYear': 'choose a year',
           'statistic': 'statistic',
+          'chooseLang': 'choose your lang'
         },
         'zh_CN': {
           'zh_CN': '中文',
           'trend': '走势',
+          'chooseLang': '选择语言',
           'dragToSeeMore': '左右拖动查看更多',
           'chooseYear': '请选择年份',
           "Month": '月',

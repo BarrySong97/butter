@@ -5,9 +5,9 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:isar/isar.dart';
-import 'package:lipomo/models/Habit.dart';
-import 'package:lipomo/services/HabitService.dart';
-import 'package:lipomo/utils/Color.dart';
+import 'package:butter/models/Habit.dart';
+import 'package:butter/services/HabitService.dart';
+import 'package:butter/utils/Color.dart';
 
 import '../../../db.dart';
 import '../index.dart';

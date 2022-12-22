@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "lipomo" "\0"
+            VALUE "FileDescription", "butter" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "lipomo" "\0"
+            VALUE "InternalName", "butter" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2022 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "lipomo.exe" "\0"
-            VALUE "ProductName", "lipomo" "\0"
+            VALUE "OriginalFilename", "butter.exe" "\0"
+            VALUE "ProductName", "butter" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
