@@ -9,9 +9,9 @@ import '../../../utils/Color.dart';
 
 List<String> weekData = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
+final DateTime d = DateTime.now();
+int weekDay = d.weekday;
 List<DateTime> getThisWeek(List<DateTime> list) {
-  final DateTime d = DateTime.now();
-  int weekDay = d.weekday;
   final DateTime firstDayOfWeek = d.subtract(Duration(days: weekDay - 1));
   final DateTime lastDayOfWeek = firstDayOfWeek.add(Duration(days: 6));
 
@@ -93,6 +93,16 @@ class WeekItem extends StatelessWidget {
             .toList());
   }
 
+  Widget _buildTodayMark(int day) {
+    return weekDay == day
+        ? SizedBox(
+            height: 1,
+            width: 4,
+            child: ColoredBox(color: Colors.red),
+          )
+        : Container();
+  }
+
   Widget _buildWeekItem(DateTime date, int idx) {
     final String day = date.day.toString();
     final bool checked = checkedDates
@@ -103,15 +113,30 @@ class WeekItem extends StatelessWidget {
 
     return Container(
         child: Column(children: [
-      Text(
-        weekData[idx].tr,
-        style: const TextStyle(
-            color: Color(0xff686868),
-            fontSize: 12,
-            fontWeight: FontWeight.w500),
+      Container(
+        child: Text(
+          weekData[idx].tr,
+          style: const TextStyle(
+              color: Color(0xff686868),
+              fontSize: 12,
+              fontWeight: FontWeight.w500),
+        ),
       ),
-      const SizedBox(
-        height: 8,
+      // _buildTodayMark(date.weekday),
+      SizedBox(
+        height: 3,
+      ),
+      date.weekday == weekDay
+          ? SizedBox(
+              height: 1,
+              width: 4,
+              child: ColoredBox(color: Colors.red),
+            )
+          : SizedBox(
+              height: 1,
+            ),
+      SizedBox(
+        height: 3,
       ),
       GestureDetector(
         onTap: () {

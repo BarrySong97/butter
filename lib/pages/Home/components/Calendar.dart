@@ -121,16 +121,34 @@ class _CalendarView extends ConsumerState<CalendarView> {
         ? HexColor.getHabitColor(habit, checked)
         : Colors.transparent;
     return Center(
-        child: Container(
-      width: 50,
-      height: 50,
-      alignment: Alignment.center,
-      child: Text(
-        day.day.toString(),
-        style: TextStyle(color: Colors.white),
-      ),
-      decoration: BoxDecoration(
-          color: checkedColor, borderRadius: BorderRadius.circular(50)),
+        child: Column(
+      children: [
+        Container(
+          width: 36,
+          height: 36,
+          alignment: Alignment.center,
+          child: Text(
+            day.day.toString(),
+            style: TextStyle(color: Colors.white),
+          ),
+          decoration: BoxDecoration(
+              color: checkedColor, borderRadius: BorderRadius.circular(50)),
+        ),
+        SizedBox(
+          height: 6,
+        ),
+        today.day == day.day
+            ? Container(
+                height: 4,
+                width: 4,
+                decoration: BoxDecoration(
+                    color: Colors.red, borderRadius: BorderRadius.circular(20)),
+              )
+            : SizedBox(
+                width: 2,
+                height: 1,
+              )
+      ],
     ));
   }
 }
