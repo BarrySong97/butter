@@ -55,7 +55,7 @@ class _CalendarView extends ConsumerState<CalendarView> {
           daysTextStyle: TextStyle(color: Colors.white),
           weekdayTextStyle: TextStyle(color: Colors.white),
           onDayPressed: (DateTime date, List<Event> events) async {
-            if (date.day <= DateTime.now().day) {
+            if (date.isBefore(today)) {
               final Iterable<DateTime>? checkItem = habit.dates
                   ?.where((element) => DateUtils.isSameDay(element, date));
               final bool exsixted = checkItem?.isNotEmpty ?? false;
@@ -117,7 +117,7 @@ class _CalendarView extends ConsumerState<CalendarView> {
     DateTime day,
     bool checked,
   ) {
-    final Color checkedColor = day.isBefore(today)
+    final Color checkedColor = !day.isAfter(today)
         ? HexColor.getHabitColor(habit, checked)
         : Colors.transparent;
     return Center(

@@ -49,7 +49,7 @@ class Statistics extends HookConsumerWidget {
       if (element.month == today.month) {
         double week = element.day / 7;
         // print(element.day / 7);
-        weekLineData[week.toInt()]++;
+        weekLineData[week.toInt() - 1]++;
       }
     });
     DateFormat formatter = DateFormat('yyyy-MM-dd');
