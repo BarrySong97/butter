@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.butter">
+    package="com.awareness.butter">
    <application
         android:label="butter"
         android:name="${applicationName}"

@@ -137,7 +137,7 @@ class _CalendarView extends ConsumerState<CalendarView> {
         SizedBox(
           height: 6,
         ),
-        today.day == day.day
+        DateUtils.isSameDay(today, day)
             ? Container(
                 height: 4,
                 width: 4,
