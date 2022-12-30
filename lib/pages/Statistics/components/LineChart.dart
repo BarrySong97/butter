@@ -3,22 +3,27 @@ import 'package:flutter/material.dart';
 
 class LineChartSample2 extends StatefulWidget {
   final List<int> data;
-  const LineChartSample2({super.key, required this.data});
+  final Color color;
+  final List<String> weekLabel;
+  const LineChartSample2(
+      {super.key,
+      required this.data,
+      required this.color,
+      required this.weekLabel});
 
   @override
   State<LineChartSample2> createState() => _LineChartSample2State();
 }
 
 class _LineChartSample2State extends State<LineChartSample2> {
-  List<Color> gradientColors = [
-    const Color(0xff00B4DB),
-    const Color(0xff0083B0),
-  ];
+  late List<Color> gradientColors;
 
   bool showAvg = false;
 
   @override
   Widget build(BuildContext context) {
+    gradientColors = [widget.color, widget.color.withOpacity(0.2)];
+    weekLabel = widget.weekLabel;
     return Container(
       height: 100,
       child: LineChart(
@@ -41,12 +46,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
     "Nov",
     "Dec",
   ];
-  final weekLabel = [
-    "W1",
-    "W2",
-    "W3",
-    "W4",
-  ];
+  late List<String> weekLabel;
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
     const style = TextStyle(
       color: Color(0xff68737d),
@@ -57,7 +57,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
     if (value.toInt() < widget.data.length && value.toInt() % 2 == 0) {
       text = Text(monthLabel[value.toInt()], style: style);
     }
-    if (value.toInt() < widget.data.length && widget.data.length == 4) {
+    if (value.toInt() < widget.data.length && widget.data.length == 10) {
       text = Text(weekLabel[value.toInt()], style: style);
     }
 
@@ -94,7 +94,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
         // text = '50k';
         text = '';
     }
-    if (widget.data.length == 4) {
+    if (widget.data.length == 10) {
       switch (value.toInt()) {
         case 0:
           text = '0';
@@ -112,7 +112,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
   }
 
   LineChartData mainData() {
-    final int maxY = widget.data.length == 4 ? 8 : 32;
+    final int maxY = widget.data.length == 10 ? 8 : 32;
     final int maxX = widget.data.length - 1;
     final int minX = 0;
     final int minY = 0;
@@ -124,7 +124,7 @@ class _LineChartSample2State extends State<LineChartSample2> {
     return LineChartData(
       gridData: FlGridData(
           show: true,
-          horizontalInterval: widget.data.length == 4 ? 1 : 7,
+          horizontalInterval: widget.data.length == 10 ? 1 : 7,
           drawVerticalLine: false),
       titlesData: FlTitlesData(
         show: true,

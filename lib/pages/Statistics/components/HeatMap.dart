@@ -6,14 +6,15 @@ import 'HeatMap/time_utils.dart';
 class HeatMap extends StatelessWidget {
   final int year;
   final List<DateTime> dates;
-  const HeatMap({required this.year, required this.dates});
+  final Color color;
+  const HeatMap({required this.year, required this.dates, required this.color});
   @override
   Widget build(BuildContext context) {
     return HeatMapCalendar(
       year: year,
       input: dates,
       colorThresholds: {
-        1: Colors.blue,
+        1: color,
       },
       weekDaysLabels: [
         'M',

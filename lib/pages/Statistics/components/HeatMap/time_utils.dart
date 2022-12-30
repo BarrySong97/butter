@@ -29,6 +29,40 @@ class TimeUtils {
     'F',
   ];
 
+  static List<String> getRecentWeekNumLabel(int num) {
+    final int currentWeek = getCurrentWeekNum(DateTime.now());
+    List<String> weekLabel = [];
+    weekLabel.add('W $currentWeek');
+    for (int i = 0; i < num - 1; i++) {
+      int previousWeek = currentWeek - i - 1;
+      weekLabel.add('W $previousWeek ');
+    }
+    return weekLabel.reversed.toList();
+  }
+
+  static int getCurrentWeekNum(date) {
+    DateTime currentDate = date;
+
+// Get the current year
+    int currentYear = currentDate.year;
+
+// Get the first day of the year
+    DateTime firstDayOfYear = DateTime(currentYear);
+    int dayOfWeek = currentDate.weekday;
+    DateTime monday = currentDate.subtract(Duration(days: dayOfWeek - 1));
+// Get the current week number
+    int currentWeek = 1;
+
+    DateTime currentWeekStart = firstDayOfYear;
+    while (currentWeekStart.isBefore(monday)) {
+      currentWeek++;
+      currentWeekStart = currentWeekStart.add(Duration(days: 7));
+    }
+
+    return currentWeek;
+// print(currentWeek)
+  }
+
   /// Obtains the first day of the current week,
   /// based on user's current day
   static DateTime firstDayOfTheWeek(DateTime today) {

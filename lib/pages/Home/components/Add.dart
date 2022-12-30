@@ -1,22 +1,24 @@
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:isar/isar.dart';
 import 'package:butter/models/Habit.dart';
 import 'package:butter/services/HabitService.dart';
 import 'package:butter/utils/Color.dart';
 
-import '../../../db.dart';
 import '../index.dart';
 
-void showAddHabitDialog(BuildContext context, bool edit, Habit habit) {
+void showAddHabitDialog(BuildContext context, bool edit, Habit habit,
+    [Function? refresh]) async {
   // List<String> data = AppConfig.languageSupports.keys.toList();
-  showCupertinoModalPopup(
+  final bool? back = await showCupertinoModalPopup<bool?>(
       context: context,
       builder: (context) => AddHabit(edit: edit, editHabit: habit));
+  // print(back);
+  if ((back ?? false) && refresh != null) {
+    refresh();
+  }
 }
 
 class AddHabit extends ConsumerStatefulWidget {
@@ -87,7 +89,7 @@ class _AddHabit extends ConsumerState<AddHabit> {
           style: TextStyle(
               fontSize: 16, color: Color.fromARGB(255, 184, 180, 184)),
         ),
-        onTap: () => {Navigator.pop(context)},
+        onTap: () => {Navigator.of(context).pop(false)},
       ),
       Text(
         'addNewHabbit'.tr,
@@ -169,7 +171,6 @@ class _AddHabit extends ConsumerState<AddHabit> {
       await HabitService.addHabit(habit);
       ref.invalidate(habitProvider);
     }
-    await Future.microtask(
-        () => Navigator.of(context).pop('Async thing is done!'));
+    await Future.microtask(() => Navigator.of(context).pop(true));
   }
 }

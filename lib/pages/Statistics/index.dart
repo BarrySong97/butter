@@ -11,6 +11,7 @@ import 'package:butter/pages/Statistics/components/InfoCard.dart';
 import 'package:butter/services/HabitService.dart';
 
 import '../../models/Habit.dart';
+import '../../utils/Color.dart';
 import '../Home/components/Add.dart';
 import '../Home/index.dart';
 import 'components/HeatMap/week_labels.dart';
@@ -28,6 +29,9 @@ final yearProvider = StateProvider.autoDispose<int>((ref) {
 final lineProvider = StateProvider.autoDispose<int>((ref) {
   return 1;
 });
+final colorProvider = StateProvider.autoDispose<Color>((ref) {
+  return Colors.white;
+});
 
 class Statistics extends HookConsumerWidget {
   final Color boxColor = const Color(0xff292929);
@@ -38,18 +42,25 @@ class Statistics extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final int year = ref.watch(yearProvider);
     final int lineMode = ref.watch(lineProvider);
+    Color color = ref.watch(colorProvider);
+    if (color == Colors.white) {
+      color = Color(HexColor.getColorFromHex(habit.color));
+    }
 
     final List<DateTime> dates = getDateByYear(habit, year);
     final List<int> yearLineData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-    final List<int> weekLineData = [0, 0, 0, 0];
+    final List<int> weekLineData = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     dates.forEach((element) {
       yearLineData[element.month - 1]++;
     });
+    int dayOfWeek = today.weekday;
+    DateTime monday = today.subtract(Duration(days: dayOfWeek - 1));
+    int curWeekOfYear = TimeUtils.getCurrentWeekNum(today);
+
     dates.forEach((element) {
-      if (element.month == today.month) {
-        double week = element.day / 7;
-        // print(element.day / 7);
-        weekLineData[week.toInt() - 1]++;
+      int weekOfYear = TimeUtils.getCurrentWeekNum(element);
+      if (curWeekOfYear - weekOfYear <= 9) {
+        weekLineData[9 - (curWeekOfYear - weekOfYear)]++;
       }
     });
     DateFormat formatter = DateFormat('yyyy-MM-dd');
@@ -80,6 +91,7 @@ class Statistics extends HookConsumerWidget {
         1;
     final double allPercent = allNum / (allDays);
 
+    final Color checkedColor = Color(HexColor.getColorFromHex(habit.color));
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xff1a1a1a),
@@ -103,10 +115,10 @@ class Statistics extends HookConsumerWidget {
               const SizedBox(height: 12),
               buildAllInfoCard(allNum, allDays, allPercent),
               const SizedBox(height: 12),
-              buildLineCard(
-                  ref, lineMode == 1 ? yearLineData : weekLineData, lineMode),
+              buildLineCard(ref, lineMode == 1 ? yearLineData : weekLineData,
+                  lineMode, checkedColor),
               const SizedBox(height: 12),
-              buildHeatMapCalendarCard(year, dates, ref),
+              buildHeatMapCalendarCard(checkedColor, year, dates, ref),
               const SizedBox(height: 8),
               buildDeleteBtn(context, ref),
               // buildHeatMapCalendarCard()
@@ -220,9 +232,14 @@ class Statistics extends HookConsumerWidget {
     );
   }
 
-  Widget buildLineCard(WidgetRef ref, List<int> data, int lineMode) {
+  Widget buildLineCard(
+      WidgetRef ref, List<int> data, int lineMode, Color color) {
     return InfoCard(
-      content: LineChartSample2(data: data),
+      content: LineChartSample2(
+        data: data,
+        weekLabel: TimeUtils.getRecentWeekNumLabel(10),
+        color: color,
+      ),
       title: 'trend'.tr,
       extra: CustomSlidingSegmentedControl<int>(
         initialValue: 1,
@@ -266,7 +283,7 @@ class Statistics extends HookConsumerWidget {
   }
 
   Widget buildHeatMapCalendarCard(
-      int year, List<DateTime> dates, WidgetRef ref) {
+      Color color, int year, List<DateTime> dates, WidgetRef ref) {
     return InfoCard(
       title: '日历图',
       extra: Row(
@@ -323,7 +340,7 @@ class Statistics extends HookConsumerWidget {
                 child: SizedBox(
                   width: 960,
                   height: 150,
-                  child: HeatMap(year: year, dates: dates),
+                  child: HeatMap(year: year, color: color, dates: dates),
                 ),
               ))
             ],
@@ -350,7 +367,13 @@ class Statistics extends HookConsumerWidget {
       IconButton(
           icon: const Icon(Icons.edit),
           tooltip: 'edit habit info',
-          onPressed: () => showAddHabitDialog(context, true, habit)),
+          onPressed: () {
+            showAddHabitDialog(context, true, habit, () {
+              ref.read(colorProvider.notifier).state =
+                  Color(HexColor.getColorFromHex(habit.color));
+              ref.invalidate(habitProvider);
+            });
+          }),
     ];
   }
 }

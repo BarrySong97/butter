@@ -34,7 +34,7 @@ class HeatMapDay extends StatelessWidget {
   Color getColorFromThreshold() {
     Color color = defaultColor;
     if (chcked) {
-      color = Colors.blue;
+      color = thresholds[1]!;
     }
 
     return value == 0 ? Colors.transparent : color;
