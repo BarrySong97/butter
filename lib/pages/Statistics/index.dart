@@ -68,7 +68,7 @@ class Statistics extends HookConsumerWidget {
         formatter.format(dates.isNotEmpty ? dates.first : today);
     final String createdDate = formatter.format(habit.createdDate ?? today);
     controller =
-        ScrollController(initialScrollOffset: (80 * today.month).toDouble());
+        ScrollController(initialScrollOffset: (8 * curWeekOfYear).toDouble());
     // month
     final int thisMonthNum =
         dates.where((element) => element.month == today.month).length;

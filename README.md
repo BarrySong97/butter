@@ -2,6 +2,18 @@
 
 A Simple beautiful Habit Tracker App
 
+android build apk
+
+```
+flutter build apk --split-per-abi
+```
+
+build icons for app
+
+```
+flutter pub run flutter_launcher_icons
+```
+
 ## App (lang support en/zh)
 
 ![](https://files.catbox.moe/2q3933.jpg)

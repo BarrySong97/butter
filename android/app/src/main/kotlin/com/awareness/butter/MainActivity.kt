@@ -1,4 +1,4 @@
-package com.example.butter
+package com.awareness.butter
 
 import io.flutter.embedding.android.FlutterActivity
 

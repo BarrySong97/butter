@@ -45,7 +45,7 @@ class _CalendarView extends ConsumerState<CalendarView> {
     Locale? l = Get.locale;
     return Material(
       child: Container(
-        height: 400,
+        height: 435,
         padding: EdgeInsets.symmetric(horizontal: 6, vertical: 0),
         color: Color(0xff292929),
         child: CalendarCarousel<Event>(

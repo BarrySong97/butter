@@ -8,7 +8,7 @@
 PRODUCT_NAME = butter
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.example.butter
+PRODUCT_BUNDLE_IDENTIFIER = ccom.awareness.butter
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2022 com.example. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2022 ccom.awareness. All rights reserved.
