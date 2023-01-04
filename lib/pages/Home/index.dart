@@ -1,3 +1,4 @@
+import 'package:butter/pages/Home/components/Rank.dart';
 import 'package:flutter/material.dart';
 import 'package:flex_color_picker/flex_color_picker.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,6 +9,7 @@ import 'package:butter/services/HabitService.dart';
 
 import '../../models/Habit.dart';
 import 'components/Add.dart';
+import 'components/Calendar.dart';
 
 final habitProvider = FutureProvider<List<Habit?>>((ref) async {
   return HabitService.getAll();
@@ -33,7 +35,13 @@ class HomePage extends HookConsumerWidget {
           'habbitsTitle'.tr,
           style: const TextStyle(fontWeight: FontWeight.w600, letterSpacing: 4),
         ),
-        actions: buildAction(),
+        actions: habitList.when(
+          loading: () => [],
+          error: (err, stack) => [],
+          data: (list) {
+            return buildAction(context, list);
+          },
+        ),
       ),
       body: Container(
         padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -126,15 +134,22 @@ class HomePage extends HookConsumerWidget {
               ..dates = []));
   }
 
-  List<Widget> buildAction() {
+  List<Widget> buildAction(BuildContext context, List<Habit?> list) {
     return [
+      GestureDetector(
+        onTap: () => {showRankView(context, list)},
+        child: const Padding(
+          padding: EdgeInsets.fromLTRB(16, 16, 4, 16),
+          child: Icon(Icons.copy_sharp, color: Colors.white),
+        ),
+      ),
       GestureDetector(
         onTap: () => {Get.toNamed("/settings")},
         child: const Padding(
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.fromLTRB(16, 16, 16, 16),
           child: Icon(Icons.settings, color: Colors.white),
         ),
-      )
+      ),
     ];
   }
 }

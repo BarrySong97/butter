@@ -43,6 +43,7 @@ dependencies:
   fl_chart: 0.55.2
   fluttertoast: ^8.1.2
   dropdown_button2: ^1.9.2
+  drag_and_drop_lists: ^0.3.3
   custom_sliding_segmented_control: ^1.7.3
   isar: *isar_version
   url_launcher: ^6.1.7
