@@ -13,4 +13,6 @@ class Habit {
   List<DateTime>? dates;
 
   DateTime? createdDate;
+
+  int? rank;
 }

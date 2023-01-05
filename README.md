@@ -14,6 +14,12 @@ build icons for app
 flutter pub run flutter_launcher_icons
 ```
 
+generate model
+
+```
+flutter pub run build_runner build
+```
+
 ## App (lang support en/zh)
 
 ![](https://files.catbox.moe/2q3933.jpg)

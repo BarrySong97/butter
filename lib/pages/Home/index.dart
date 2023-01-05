@@ -39,6 +39,7 @@ class HomePage extends HookConsumerWidget {
           loading: () => [],
           error: (err, stack) => [],
           data: (list) {
+            list.sort((a, b) => a?.rank ?? 0 - (b?.rank ?? 0));
             return buildAction(context, list);
           },
         ),
@@ -49,6 +50,7 @@ class HomePage extends HookConsumerWidget {
           loading: () => const CircularProgressIndicator(),
           error: (err, stack) => Text('Error: $err'),
           data: (list) {
+            list.sort((a, b) => a?.rank ?? 0 - (b?.rank ?? 0));
             return buildList(context, list, ref);
           },
         ),

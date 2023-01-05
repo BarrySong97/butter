@@ -58,6 +58,14 @@ class HabitService {
     });
   }
 
+  static Future<void> rankHabits(List<Habit> list) async {
+    final _db = await db;
+    final _repo = await repo;
+    await _db.writeTxn(() async {
+      await _repo.putAll(list);
+    });
+  }
+
   static Future<void> check(Habit item, bool checked, DateTime date) async {
     final _db = await db;
     final _repo = await repo;

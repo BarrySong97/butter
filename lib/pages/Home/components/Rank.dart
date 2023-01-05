@@ -4,8 +4,11 @@ import 'package:drag_and_drop_lists/drag_and_drop_lists.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../models/Habit.dart';
+import '../../../services/HabitService.dart';
+import '../index.dart';
 
 void showRankView(BuildContext context, List<Habit?> habitList) {
   // List<String> data = AppConfig.languageSupports.keys.toList();
@@ -16,15 +19,15 @@ void showRankView(BuildContext context, List<Habit?> habitList) {
           ));
 }
 
-class Rank extends StatefulWidget {
+class Rank extends ConsumerStatefulWidget {
   final List<Habit?> habitList;
 
   Rank({required this.habitList});
   @override
-  RankState createState() => RankState();
+  ConsumerState<Rank> createState() => RankState();
 }
 
-class RankState extends State<Rank> {
+class RankState extends ConsumerState<Rank> {
   late List<DragAndDropList> _contents;
 
   @override
@@ -33,25 +36,27 @@ class RankState extends State<Rank> {
 
     _contents = List.generate(1, (index) {
       return DragAndDropList(
-        // header: Row(
-        //   children: <Widget>[
-        //     const Expanded(
-        //       flex: 1,
-        //       child: Divider(),
-        //     ),
-        //   ],
-        // ),
         children: widget.habitList
             .map(
               (e) => DragAndDropItem(
                 child: Container(
                   height: 50,
+                  key: Key(e?.name! ?? ''),
                   margin: EdgeInsets.only(bottom: 16),
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [Text(e?.name ?? ''), Icon(Icons.abc)],
+                    children: [
+                      Text(
+                        e?.name ?? '',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      Icon(
+                        Icons.menu,
+                        color: Colors.white,
+                      )
+                    ],
                   ),
                   decoration: BoxDecoration(
                       color: Color.fromARGB(255, 104, 98, 98),
@@ -103,16 +108,15 @@ class RankState extends State<Rank> {
         onTap: () => {Navigator.of(context).pop(false)},
       ),
       Text(
-        'addNewHabbit'.tr,
+        'rankTitle'.tr,
         style: TextStyle(
             fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white),
       ),
       GestureDetector(
-          onTap: () => {},
+          onTap: () => {rankHabits(context)},
           child: Text('done'.tr,
               style: TextStyle(
-                fontSize: 16,
-              )))
+                  fontSize: 16, color: Color.fromARGB(255, 184, 180, 184))))
     ]);
   }
 
@@ -120,7 +124,9 @@ class RankState extends State<Rank> {
       int oldItemIndex, int oldListIndex, int newItemIndex, int newListIndex) {
     setState(() {
       var movedItem = _contents[oldListIndex].children.removeAt(oldItemIndex);
+      var habitItem = widget.habitList.removeAt(oldItemIndex);
       _contents[newListIndex].children.insert(newItemIndex, movedItem);
+      widget.habitList.insert(newItemIndex, habitItem);
     });
   }
 
@@ -129,5 +135,14 @@ class RankState extends State<Rank> {
       var movedList = _contents.removeAt(oldListIndex);
       _contents.insert(newListIndex, movedList);
     });
+  }
+
+  Future<void> rankHabits(BuildContext context) async {
+    widget.habitList.asMap().keys.forEach((index) {
+      widget.habitList[index]!.rank = index;
+    });
+    await HabitService.rankHabits(widget.habitList as List<Habit>);
+    ref.invalidate(habitProvider);
+    await Future.microtask(() => Navigator.of(context).pop(true));
   }
 }
