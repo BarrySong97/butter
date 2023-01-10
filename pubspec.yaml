@@ -44,6 +44,7 @@ dependencies:
   fluttertoast: ^8.1.2
   dropdown_button2: ^1.9.2
   drag_and_drop_lists: ^0.3.3
+  flutter_native_splash: ^2.2.16
   custom_sliding_segmented_control: ^1.7.3
   isar: *isar_version
   url_launcher: ^6.1.7

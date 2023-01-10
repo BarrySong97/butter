@@ -57,12 +57,12 @@ class Statistics extends HookConsumerWidget {
     DateTime monday = today.subtract(Duration(days: dayOfWeek - 1));
     int curWeekOfYear = TimeUtils.getCurrentWeekNum(today);
 
-    dates.forEach((element) {
-      int weekOfYear = TimeUtils.getCurrentWeekNum(element);
-      if (curWeekOfYear - weekOfYear <= 9) {
-        weekLineData[9 - (curWeekOfYear - weekOfYear)]++;
-      }
-    });
+    // dates.forEach((element) {
+    //   int weekOfYear = TimeUtils.getCurrentWeekNum(element);
+    //   if (curWeekOfYear - weekOfYear <= 9) {
+    //     weekLineData[9 - (curWeekOfYear - weekOfYear)]++;
+    //   }
+    // });
     DateFormat formatter = DateFormat('yyyy-MM-dd');
     final String firtTrackedDate =
         formatter.format(dates.isNotEmpty ? dates.first : today);
@@ -71,11 +71,12 @@ class Statistics extends HookConsumerWidget {
         ScrollController(initialScrollOffset: (8 * curWeekOfYear).toDouble());
     // month
     final int thisMonthNum =
-        dates.where((element) => element.month == today.month).length;
+        habit.dates?.where((element) => element.month == today.month).length ??
+            0;
     final int monthAll = TimeUtils.getMonthDays(today);
     final double monthPercent = thisMonthNum / monthAll;
     // year
-    final int thisYearNum = dates.length;
+    final int thisYearNum = habit.dates?.length ?? 0;
     final int yearAll = TimeUtils.getYearDays(today);
     final double yearPercent = thisYearNum / yearAll;
 
@@ -241,44 +242,44 @@ class Statistics extends HookConsumerWidget {
         color: color,
       ),
       title: 'trend'.tr,
-      extra: CustomSlidingSegmentedControl<int>(
-        initialValue: 1,
-        height: 16,
-        children: {
-          1: Text(
-            'Year'.tr,
-            style: const TextStyle(fontSize: 10),
-          ),
-          2: Text(
-            'Month'.tr,
-            style: const TextStyle(fontSize: 10),
-          ),
-        },
-        decoration: BoxDecoration(
-          color: CupertinoColors.lightBackgroundGray,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        thumbDecoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(6),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(.3),
-              blurRadius: 4.0,
-              spreadRadius: 1.0,
-              offset: const Offset(
-                0.0,
-                2.0,
-              ),
-            ),
-          ],
-        ),
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInToLinear,
-        onValueChanged: (v) {
-          ref.read(lineProvider.notifier).state = v;
-        },
-      ),
+      // extra: CustomSlidingSegmentedControl<int>(
+      //   initialValue: 1,
+      //   height: 16,
+      //   children: {
+      //     1: Text(
+      //       'Year'.tr,
+      //       style: const TextStyle(fontSize: 10),
+      //     ),
+      //     // 2: Text(
+      //     //   'Month'.tr,
+      //     //   style: const TextStyle(fontSize: 10),
+      //     // ),
+      //   },
+      //   decoration: BoxDecoration(
+      //     color: CupertinoColors.lightBackgroundGray,
+      //     borderRadius: BorderRadius.circular(8),
+      //   ),
+      //   thumbDecoration: BoxDecoration(
+      //     color: Colors.white,
+      //     borderRadius: BorderRadius.circular(6),
+      //     boxShadow: [
+      //       BoxShadow(
+      //         color: Colors.black.withOpacity(.3),
+      //         blurRadius: 4.0,
+      //         spreadRadius: 1.0,
+      //         offset: const Offset(
+      //           0.0,
+      //           2.0,
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      //   duration: const Duration(milliseconds: 300),
+      //   curve: Curves.easeInToLinear,
+      //   onValueChanged: (v) {
+      //     ref.read(lineProvider.notifier).state = v;
+      //   },
+      // ),
     );
   }
 

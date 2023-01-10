@@ -20,6 +20,12 @@ generate model
 flutter pub run build_runner build
 ```
 
+for splash page
+
+```
+flutter pub run flutter_native_splash:create
+```
+
 ## App (lang support en/zh)
 
 ![](https://files.catbox.moe/2q3933.jpg)
